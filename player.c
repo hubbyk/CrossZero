@@ -7,15 +7,19 @@
 #include <malloc.h>
 #include <string.h>
 
-player* newPlayer(char* playerName) {
+player* newPlayer(char* playerName, int rating) {
     player *anyPlayer = (player*) malloc(sizeof(*anyPlayer));
     setName(anyPlayer, playerName);
+    setRating(anyPlayer, rating);
     return anyPlayer;
 }
 
 void setName(player *anyPlayer, char* playerName) {
-    anyPlayer->name = (char*) calloc(strlen(playerName), sizeof(char));
     strcpy(anyPlayer->name, playerName);
+}
+
+void setRating(player* anyPlayer, int rating) {
+    anyPlayer->rating = rating;
 }
 
 char* getName(player* anyPlayer) {

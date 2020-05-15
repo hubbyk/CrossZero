@@ -5,16 +5,19 @@
 #ifndef CROSSZERO_PLAYER_H
 #define CROSSZERO_PLAYER_H
 typedef struct  {
-    char *name; // имя игрока
+    int rating;    //рейтинг игрока
+    char name[15]; // имя игрока
 }player;
 
 void setName(player*, char*); //устанавливает имя для игрока
+
+void setRating(player*, int); //устанавливает рейтинг игрока
 
 char* getName(player*); // получаем имя игрока
 
 void makeMove(int X, int Y); //делает ход
 
-player* newPlayer(char*); //создает нового игрока
+player* newPlayer(char*, int); //создает нового игрока
 
 
 #endif //CROSSZERO_PLAYER_H

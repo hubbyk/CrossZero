@@ -5,8 +5,8 @@
 #ifndef CROSSZERO_MENU_H
 #define CROSSZERO_MENU_H
 
-enum userChoice {exitG, startNewGame, changeSettings, outAuthors};
+enum userChoice {EXIT, START_NEW_GAME, CHANGE_SETTINGS, PRINT_AUTHORS};
 
-void outGlobalMenu(); //выводит глобальное меню
+
 
 #endif //CROSSZERO_MENU_H
