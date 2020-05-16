@@ -39,7 +39,7 @@ rateTable* loadRateTable() {
 
         newTableLine(ratingTable, "Artorias", 100);
         newTableLine(ratingTable, "Evdokim", 80);
-        newTableLine(ratingTable, "Garry", 60);
+        newTableLine(ratingTable, "Pokug", 60);
         newTableLine(ratingTable, "Botty", 40);
     }else {
         while(!feof(rateFile)) {

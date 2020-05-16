@@ -3,7 +3,6 @@
 //
 
 #include "settings.h"
-#include <stdio.h>
 #include "malloc.h"
 
 gameSettings* loadDefaultSettings() {
@@ -11,7 +10,7 @@ gameSettings* loadDefaultSettings() {
 
     //задаем настройки по умолчанию
     setComplexity(settings, MEDIUM);
-    setCountToWin(settings, 3);
+    setWinLineLength(settings, 3);
     setFieldHeight(settings, 3);
     setFieldLength(settings, 3);
     setPlayers(settings, newPlayer("Player1", 0), newPlayer("Pokug", 0));
@@ -24,7 +23,6 @@ gameSettings* newSettings() {
     return settings;
 }
 
-
 void setComplexity(gameSettings* settings, int comp) {
     settings->complexity = comp;
 }
@@ -34,12 +32,17 @@ void setFieldHeight(gameSettings* settings, int fieldHeight) {
 void setFieldLength(gameSettings* settings, int fieldLength) {
     settings->fieldLength = fieldLength;
 }
-void setCountToWin(gameSettings* settings, int countToWin) {
-    settings->countToWin = countToWin;
+void setWinLineLength(gameSettings* settings, int winLineLength) {
+    settings->winLineLength = winLineLength;
 }
-void setPlayers(gameSettings* settings, player *human, player *bot) {
-    settings->human = human;
-    settings->bot = bot;
+void setPlayers(gameSettings* settings, player *player1, player *player2) {
+    player* oldPlayerH = settings->player1;
+    settings->player1 = player1;
+    free(oldPlayerH);
+
+    player* oldPlayerB = settings->player2;
+    settings->player2 = player2;
+    free(oldPlayerB);
 }
 
 int getComplexity(gameSettings* settings) {
@@ -51,12 +54,12 @@ int getFieldHeight(gameSettings* settings) {
 int getFieldLength(gameSettings* settings) {
     return settings->fieldLength;
 }
-int getCountToWin(gameSettings* settings) {
-    return settings->countToWin;
+int getWinLineLength(gameSettings* settings) {
+    return settings->winLineLength;
 }
 player* getPlayerHuman(gameSettings* settings) {
-    return settings->human;
+    return settings->player1;
 }
 player* getPlayerBot(gameSettings* settings) {
-    return settings->bot;
+    return settings->player2;
 }
