@@ -5,28 +5,27 @@
 #ifndef CROSSZERO_BACKFIELD_H
 #define CROSSZERO_BACKFIELD_H
 
-#include <bits/types/FILE.h>
+#include "mainheader.h"
+
+enum value {VOID, CROSS, ZERO};
 
 typedef struct {
-    int *xPos; //массив с координатами крестиков
-    int *oPos; //массив с координатами нулей
+    int count;  // размеры массивов
+    int *xCord; // массив с координатами крестиков
+    int *yCord; // массив с координатами нулей
+    int *value; // значение клетки
 }fieldMap;
 
 typedef struct{
-    FILE *fieldFile; // файл, в который будет сохраняться информация о поле (для сохранения игры)
     int length; // длина поля
     int height; // высота поля
     fieldMap *gameMap; // указатель на структуру с картой поля
 }gameField;
 
-void setFieldSize(int, int, gameField*); //задает параметры поля (высоту и ширину)
-
-int getFieldLengthA(gameField*); //гетеры для полей gameField
-
-int getFieldHeightA(gameField*);
-
-int** getFieldMap(gameField*);
-
 gameField* newGameField(); //выделяет память под новое поле
+
+void writeValue(gameField* field, int xCord, int yCord, int value); // записывает новое значение в карту
+
+int getValueByCords(gameField* field, int xCord, int yCord); // получаем значение по координатам
 
 #endif //CROSSZERO_BACKFIELD_H

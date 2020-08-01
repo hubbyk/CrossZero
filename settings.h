@@ -5,7 +5,7 @@
 #ifndef CROSSZERO_SETTINGS_H
 #define CROSSZERO_SETTINGS_H
 
-#include "player.h"
+#include "mainheader.h"
 
 /*
  * Настройки
@@ -22,7 +22,7 @@
  * Посмотреть все эти функции можно ниже
  */
 
-enum complexity {HUMAN, EASY, MEDIUM, HARD, DARKSOULS};
+enum complexity {HUMAN, EASY, MEDIUM, HARD, DARK_SOULS};
 /*
  * НАСТРОЙКИ ПО УМОЛЧАНИЮ
  * сложность: средняя
@@ -31,8 +31,7 @@ enum complexity {HUMAN, EASY, MEDIUM, HARD, DARKSOULS};
  */
 typedef struct {
     int complexity;  //уровень сложности
-    int fieldHeight; //параметры поля
-    int fieldLength;
+    int fieldSize; //параметры поля
     int winLineLength; //длина выигрышной цепочки
     player* player1;   //игроки
     player* player2;
@@ -40,15 +39,13 @@ typedef struct {
 /*
  * Получение структуры gameSettings
  */
-gameSettings* loadDefaultSettings();
-gameSettings* loadGameSettings(char* gameName);//загружает настройки сохраненной игры TODO
-gameSettings* newSettings(); //создает новую структуру настроек, задает значения полей структуры по умолчанию
+gameSettings* loadDefaultSettings(); // задает значения полей структуры по умолчанию
+gameSettings* newSettings(); //создает новую структуру настроек
 /*
  * Сеттеры для установления значений полей структуры gameSettings
  */
 void setComplexity(gameSettings*, int);
-void setFieldHeight(gameSettings*, int);
-void setFieldLength(gameSettings*, int);
+void setFieldSize(gameSettings*, int);
 void setWinLineLength(gameSettings*, int);
 void setPlayers(gameSettings*, player* player1, player* player2);
 /*
@@ -56,8 +53,7 @@ void setPlayers(gameSettings*, player* player1, player* player2);
  */
 int getComplexity(gameSettings*);
 int getFieldHeight(gameSettings*);
-int getFieldLength(gameSettings*);
-int getWinLineLength(gameSettings*);
+int getFieldSize(gameSettings*);
 player* getPlayerHuman(gameSettings*);
 player* getPlayerBot(gameSettings*);
 

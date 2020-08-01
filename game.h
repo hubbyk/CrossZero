@@ -5,8 +5,8 @@
 #ifndef CROSSZERO_GAME_H
 #define CROSSZERO_GAME_H
 
+#include "mainheader.h"
 #include "backfield.h"
-#include "player.h"
 #include "settings.h"
 
 typedef struct {
@@ -14,9 +14,9 @@ typedef struct {
     gameSettings *settings;
 }GAME;
 
-int startGame(GAME thisGame);//начинает игру
+int startGame(GAME thisGame); // начинает игру
 
-void safeGame(GAME thisGame);//сохраняет текущую игру
+void safeGame(GAME thisGame); // сохраняет текущую игру
 
 
 #endif //CROSSZERO_GAME_H

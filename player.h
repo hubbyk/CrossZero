@@ -4,6 +4,7 @@
 
 #ifndef CROSSZERO_PLAYER_H
 #define CROSSZERO_PLAYER_H
+
 typedef struct  {
     int rating;    //рейтинг игрока
     char name[15]; // имя игрока

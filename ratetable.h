@@ -5,8 +5,7 @@
 #ifndef CROSSZERO_RATETABLE_H
 #define CROSSZERO_RATETABLE_H
 
-#include "player.h"
-#include <stdio.h>
+#include "mainheader.h"
 
 /*
  * Таблица рейтингов
