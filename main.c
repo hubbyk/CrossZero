@@ -1,11 +1,12 @@
-#include <stdio.h>
 #include "game.h"
-#include "menu.h"
-#include "ratetable.h"
-#include "settings.h"
+
 
 
 int main(int argc, char * argv[]) {
+    gameSettings* settings = loadDefaultSettings();
+    tableLine* ratingTable = loadRateTable();
+
+    startGame(loadSavedGame(ratingTable), ratingTable);
 
     return 0;
 }

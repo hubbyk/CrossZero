@@ -7,7 +7,7 @@
 
 #include "mainheader.h"
 
-enum value {VOID, CROSS, ZERO};
+enum value {VOID, CROSS, ZERO, BORDER};
 
 typedef struct {
     int count;  // размеры массивов
@@ -17,15 +17,27 @@ typedef struct {
 }fieldMap;
 
 typedef struct{
-    int length; // длина поля
-    int height; // высота поля
+    int size; // длина поля
     fieldMap *gameMap; // указатель на структуру с картой поля
 }gameField;
 
 gameField* newGameField(); //выделяет память под новое поле
 
+void setNewMap(gameField* field, int sizeOfMap);
+
 void writeValue(gameField* field, int xCord, int yCord, int value); // записывает новое значение в карту
 
+void addValue(gameField* field, int value, int index);
+void addXCord(gameField* field, int xCord, int index);
+void addYCord(gameField* field, int yCord, int index);
+
 int getValueByCords(gameField* field, int xCord, int yCord); // получаем значение по координатам
+int getSize(gameField* field);
+int getCountOfNonVoidCells(gameField* field);
+int* getValues(gameField* field);
+int* getXCords(gameField* field);
+int* getYCords(gameField* field);
+
+int** buildMiniMap(gameField* field, int sizeX, int sizeY, int cursorX, int cursorY); // создает мини матрицу
 
 #endif //CROSSZERO_BACKFIELD_H

@@ -6,22 +6,12 @@
 #include <string.h>
 #include <malloc.h>
 
-char* getNameFromLine(rateTable* table, int lineNumber) {
-    char* result = (char *) calloc(15, sizeof(char));
-    strncpy(result, (*table->lines + lineNumber - 1)->name, 15);
-    return result;
-}
-
-int getRatingFromLine(rateTable* table, int lineNumber) {
-    return (*table->lines + lineNumber - 1)->rate;
-}
-
-rateTable* loadRateTable() {
+tableLine* loadRateTable() {
     char rateFileName[12] = {"ratings.txt"};
     FILE *rateFile;
-    rateTable *ratingTable = (rateTable*) malloc(sizeof(rateTable));
-    ratingTable->tableSize = 0;
-    ratingTable->lines = (tableLine**) malloc(sizeof(tableLine));
+    tableLine *ratingTable = NULL;
+    char playerName[15] = {"\0"}, ch;
+    int rating = 0;
 
     rateFile = fopen(rateFileName, "r+");
     if(rateFile == NULL) {
@@ -37,75 +27,180 @@ rateTable* loadRateTable() {
         }
         fprintf(rateFile, "Artorias 100\nEvdokim 80\nGarry 60\nBotty 40\n");
 
-        newTableLine(ratingTable, "Artorias", 100);
-        newTableLine(ratingTable, "Evdokim", 80);
-        newTableLine(ratingTable, "Pokug", 60);
-        newTableLine(ratingTable, "Botty", 40);
+        ratingTable = addLine(ratingTable, newPlayer("Artorias", 100));
+        ratingTable = addLine(ratingTable, newPlayer("Evdokim", 80));
+        ratingTable = addLine(ratingTable, newPlayer("Pokug", 60));
+        ratingTable = addLine(ratingTable, newPlayer("Botty", 40));
     }else {
         while(!feof(rateFile)) {
-            readTableLine(rateFile, ratingTable);
+            for(int i = 0; (ch = (char)fgetc(rateFile)) != ' ' && !feof(rateFile); i++) {
+                playerName[i] = ch;
+            }
+            for(int i = 0; (ch = (char)fgetc(rateFile)) != '\n' && !feof(rateFile); i++) {
+                rating = rating * 10 + (ch) - 48;
+            }
+            if(!feof(rateFile)) {
+                ratingTable = addLine(ratingTable, newPlayer(playerName, rating));
+
+                memset(playerName, '\0', 15);
+                rating = 0;
+            }
         }
     }
+
+    fclose(rateFile);
 
     return ratingTable;
 }
 
-tableLine* readTableLine(FILE *rateTableFile, rateTable *table) {
-    char playerName[15] = {'\0'}, inputString[100] = {'\0'};
-    int playerRating = 0, index = 0;
-
-    fgets(inputString, 100, rateTableFile);
-
-    if(strlen(inputString) < 3) return NULL;
-
-    for(; inputString[index] != ' ' && inputString[index]; index++) {
-        playerName[index] = inputString[index];
-    }
-    ++index;
-    for(;'0' <= inputString[index] && inputString[index] <= '9'; index++) {
-        playerRating = playerRating * 10 + inputString[index] - 48;
-    }
-
-    return newTableLine(table, playerName, playerRating);
+tableLine* newTableLine(char *playerName, int playerRating) {
+    tableLine* line = (tableLine*)malloc(sizeof(tableLine));
+    strcpy(line->name, playerName);
+    line->height = 1;
+    line->rate = playerRating;
+    line->right = NULL;
+    line->left = NULL;
+    return line;
 }
 
-void updateRateTable(rateTable *ratingTable, player *anyPlayer) {
-    int lineNumber = searchInTable(ratingTable, anyPlayer);
-    if (lineNumber < 0) { //нет записи с этим игроком
-        insertRateTableLine(ratingTable, anyPlayer);
+tableLine* updateRateTable(tableLine* line, player* anyPlayer, int delta) {
+    line = removeLine(line, anyPlayer);
+    anyPlayer->rating += delta;
+    addLine(line, anyPlayer);
+    return line;
+}
+
+int getHeight(tableLine* line) {
+    return (line)?line->height:0;
+}
+int balanceFactor(tableLine* line) {
+    return getHeight(line->right) - getHeight(line->left);
+}
+void fixHeight(tableLine* line) {
+    int hLeft = getHeight(line->left);
+    int hRight = getHeight(line->right);
+    line->height = (hLeft>hRight?hLeft:hRight)+1;
+}
+tableLine* rotateRight(tableLine* line) {
+    tableLine* temp = line->left;
+    line->left = temp->right;
+    temp->right = line;
+    fixHeight(line);
+    fixHeight(temp);
+    return temp;
+}
+tableLine* rotateLeft(tableLine* line) {
+    tableLine* temp = line->right;
+    line->right = line->left;
+    temp->left = line;
+    fixHeight(temp);
+    fixHeight(line);
+    return temp;
+}
+tableLine* balance(tableLine* line) {
+    fixHeight(line);
+    if(balanceFactor(line) == 2) {
+        if(balanceFactor(line->right) < 0) {
+            line->right = rotateRight(line->right);
+        }
+        return rotateLeft(line);
+    }
+    if(balanceFactor(line) == -2) {
+        if(balanceFactor(line->left) > 0) {
+            line->left = rotateLeft(line->left);
+        }
+        return rotateRight(line);
+    }
+    return line;
+}
+tableLine* addLine(tableLine* line, player* newPlayer) {
+    if(!line) return newTableLine(getName(newPlayer), getRating(newPlayer));
+    if(getRating(newPlayer) < line->rate) {
+        line->left = addLine(line->left, newPlayer);
     }else {
-        (*ratingTable->lines + lineNumber)->rate = anyPlayer->rating;
+        line->right = addLine(line->right, newPlayer);
     }
-    sortTable(ratingTable);
+    return balance(line);
 }
+tableLine* addLineN(tableLine* line, player* newPlayer) {
+    if(!line) return newTableLine(getName(newPlayer), getRating(newPlayer));
+    if(strcmp(getName(newPlayer), line->name) < 0) {
+        line->left = addLine(line->left, newPlayer);
+    }else {
+        line->right = addLine(line->right, newPlayer);
+    }
+    return balance(line);
+}
+tableLine* findMin(tableLine* line) {
+    return (line->left)?findMin(line->left):line;
+}
+tableLine* removeMin(tableLine* line) {
+    if(!line->left) return line->right;
+    line->left = removeMin(line->left);
+    return balance(line);
+}
+tableLine* removeLine(tableLine* line, player* anyPlayer) {
+    if(!line) return NULL;
+    if(getRating(anyPlayer) < line->rate) {
+        line->left = removeLine(line->left, anyPlayer);
+    }else if(getRating(anyPlayer) > line->rate) {
+        line->right = removeLine(line->right, anyPlayer);
+    }else {
+        if(!strcmp(getName(anyPlayer), line->name)) {
+            tableLine* l = line->left;
+            tableLine* r = line->right;
 
-void sortTable(rateTable *ratingTable) {
-    for(int i = 0; i < ratingTable->tableSize - 2; i++) {
-        for(int j = ratingTable->tableSize - 2; j; j--) {
-            if((*ratingTable->lines + j)->rate < (*ratingTable->lines + j + 1)->rate) {
-                tableLine temp = *(*ratingTable->lines + j);
-                *(*ratingTable->lines + j) = *(*ratingTable->lines + j + 1);
-                *(*ratingTable->lines + j + 1) = temp;
-            }
+            free(line);
+
+            if(!r) return l;
+            tableLine* min = findMin(r);
+            min->right = removeMin(r);
+            min->left = l;
+
+            return balance(l);
+        }else {
+            line->right = removeLine(line->right, anyPlayer);
         }
     }
+
+    return balance(line);
 }
 
-tableLine* newTableLine(rateTable *table, char *playerName, int playerRating) {
-    table->tableSize += 1;
-    *table->lines = (tableLine*) realloc(*table->lines, table->tableSize * sizeof(**table->lines));
-    (*table->lines + table->tableSize - 1)->rate = playerRating;
-    strcpy((*table->lines + table->tableSize - 1)->name, playerName);
-    return (*table->lines + table->tableSize);
-}
-
-void insertRateTableLine(rateTable *table, player *anyPlayer) {
-    newTableLine(table, anyPlayer->name, anyPlayer->rating);
-}
-
-int searchInTable(rateTable *ratingTable, player *anyPlayer) {
-    for(int index = 0; index < ratingTable->tableSize; index++) {
-        if(!strcmp((*ratingTable->lines)->name, anyPlayer->name)) return index;
+player* searchPlayerByName(tableLine* line, char* playerName) {
+    if(!strcmp(playerName, line->name)) return newPlayer(playerName, line->rate);
+    if(strcmp(playerName, line->name) < 0) {
+        return getPlayerByName(line->left, playerName);
+    }else {
+        return getPlayerByName(line->right, playerName);
     }
-    return -1;
+}
+player* getPlayerByName(tableLine* line, char* playerName) {
+    tableLine* newTable = NULL;
+    player* result = NULL;
+
+    newTable = buildByName(line, newTable, playerName);
+    return searchPlayerByName(newTable, playerName);
+}
+
+tableLine* buildByName(tableLine* line, tableLine* newLine, char* playerName) {
+    if(line->right) newLine = buildByName(line->right, newLine, playerName);
+    newLine = addLineN(newLine, newPlayer(line->name, line->rate));
+    if(line->left) newLine = buildByName(line->left, newLine, playerName);
+    return newLine;
+}
+
+void safeTable(tableLine* line) {
+    FILE* tableFile = fopen("ratings.txt", "w");
+    writeTable(tableFile, line);
+    fclose(tableFile);
+}
+void writeTable(FILE* tableFile, tableLine* line) {
+    if(line->right) writeTable(tableFile, line->right);
+    fprintf(tableFile, "%s %d\n", line->name, line->rate);
+    if(line->left) writeTable(tableFile, line->left);
+}
+void closeTable(tableLine* line) {
+    if(line->right) closeTable(line->right);
+    if(line->left) closeTable(line->left);
+    free(line);
 }

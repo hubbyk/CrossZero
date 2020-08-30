@@ -28,40 +28,43 @@
 
 enum changeRating {LOSE, DRAW, WIN}; //на сколько будет изменяться рейтинг в зависимости от результата игры
 //P.S. рейтинг будет домножаться на сложность игры
-typedef struct  {
+typedef struct tableLine{
     int rate;  //рейтинг
     char name[15]; //имя
+    int height;
+    struct tableLine* left;
+    struct tableLine* right;
 }tableLine;
 
-typedef struct {
-    int tableSize;
-    tableLine **lines;
-}rateTable;
-
-char* getNameFromLine(rateTable*, int lineNumber); //получаем имя игрока из строки таблицы с таким номером
-
-int getRatingFromLine(rateTable*, int lineNumber); //ан-но получаем рейтинг
-
-tableLine* readTableLine(FILE *rateTableFile, rateTable *ratingTable);//читает строку таблицы из файла
-
-tableLine* newTableLine(rateTable *table, char *playerName, int playerRating); //создаем новую строку в таблице с именем и рейтингом
+tableLine* newTableLine(char *playerName, int playerRating); //создаем новую строку в таблице с именем и рейтингом
 /*Описание loadRateTable
  * Функция запускается при старте программы, пытается прочитать файл таблицы
  * Если такого файла нет - создает новый файл и заполняет записями по умолчанию - именами и рейтингами ботов разного уровня сложности
  * Если все-таки файл нашелся - читает и выгружает в оперативную память
  * Хранения таблицы в памяти описано в ratetable.h
  */
-rateTable* loadRateTable();
+tableLine* loadRateTable();
 
-/*Описание updateRateTable
- * Смотри описание выше
- */
-void updateRateTable(rateTable *ratingTable, player *anyPlayer); //обновляет рейтинговую таблицу после окончания игры
+tableLine* updateRateTable(tableLine* line, player* anyPlayer, int delta);
 
-void sortTable(rateTable *ratingTable); //сортирует таблицу по рейтингу
+int getHeight(tableLine* line);
+int balanceFactor(tableLine* line);
+void fixHeight(tableLine* line);
+tableLine* rotateLeft(tableLine* line);
+tableLine* rotateRight(tableLine* line);
+tableLine* balance(tableLine* line);
+tableLine* addLine(tableLine* line, player* newPlayer);
+tableLine* addLineN(tableLine* line, player* newPlayer);
+tableLine* findMin(tableLine* line);
+tableLine* removeMin(tableLine* line);
+tableLine* removeLine(tableLine* line, player* anyPlayer);
 
-void insertRateTableLine(rateTable *ratingTable, player *anyPlayer); //добавляет новую запись в таблицу (обертка для newTableLine)
+player* getPlayerByName(tableLine* line, char* playerName);
+player* searchPlayerByName(tableLine* line, char* playerName);
+tableLine* buildByName(tableLine* oldLine, tableLine* newLine, char* playerName);
 
-int searchInTable(rateTable *ratingTable, player *anyPlayer); //ищет игрока в таблице
+void safeTable(tableLine* line);
+void writeTable(FILE* tableFile, tableLine* line);
+void closeTable(tableLine* line);
 
 #endif //CROSSZERO_RATETABLE_H

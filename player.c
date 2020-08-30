@@ -26,4 +26,8 @@ char* getName(player* anyPlayer) {
     return anyPlayer->name;
 }
 
+int getRating(player* anyPlayer) {
+    return anyPlayer->rating;
+}
+
 

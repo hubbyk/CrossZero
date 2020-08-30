@@ -16,6 +16,8 @@ void setRating(player*, int); //устанавливает рейтинг игр
 
 char* getName(player*); // получаем имя игрока
 
+int getRating(player*);
+
 void makeMove(int X, int Y); //делает ход
 
 player* newPlayer(char*, int); //создает нового игрока

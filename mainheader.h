@@ -8,5 +8,6 @@
 #include "malloc.h"
 #include "stdio.h"
 #include "player.h"
+#include "string.h"
 
 #endif //CROSSZERO_MAINHEADER_H

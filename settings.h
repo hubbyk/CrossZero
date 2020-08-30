@@ -33,8 +33,7 @@ typedef struct {
     int complexity;  //уровень сложности
     int fieldSize; //параметры поля
     int winLineLength; //длина выигрышной цепочки
-    player* player1;   //игроки
-    player* player2;
+    int firstMove; //кто ходит первым
 }gameSettings;
 /*
  * Получение структуры gameSettings
@@ -47,14 +46,10 @@ gameSettings* newSettings(); //создает новую структуру на
 void setComplexity(gameSettings*, int);
 void setFieldSize(gameSettings*, int);
 void setWinLineLength(gameSettings*, int);
-void setPlayers(gameSettings*, player* player1, player* player2);
 /*
  * Геттеры для получения значений полей структуры gameSettings
  */
 int getComplexity(gameSettings*);
-int getFieldHeight(gameSettings*);
 int getFieldSize(gameSettings*);
-player* getPlayerHuman(gameSettings*);
-player* getPlayerBot(gameSettings*);
-
+int getWinLineLength(gameSettings*);
 #endif //CROSSZERO_SETTINGS_H

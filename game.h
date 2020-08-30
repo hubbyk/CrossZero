@@ -6,17 +6,36 @@
 #define CROSSZERO_GAME_H
 
 #include "mainheader.h"
-#include "backfield.h"
-#include "settings.h"
+#include "gameheader.h"
+#include "ratetable.h"
+#include "greatmind.h"
 
 typedef struct {
-    char gameName[15];
+    player *player1;
+    player *player2;
     gameSettings *settings;
+    gameField *battlefield;
 }GAME;
 
-int startGame(GAME thisGame); // начинает игру
+GAME* newGame();
+GAME* createNewGame(gameSettings* settings);
+GAME* loadSavedGame(tableLine* table);
 
-void safeGame(GAME thisGame); // сохраняет текущую игру
+int startGame(GAME* thisGame, tableLine* table); // начинает игру
+void end(GAME* game);
+
+void setFirstPlayer(GAME* game, player* anyPlayer);
+void setSecondPlayer(GAME* game, player* anyPlayer);
+void setSettings(GAME* game, gameSettings* settings);
+void setBattlefield(GAME* game, gameField* field);
+
+player* getFirstPlayer(GAME* game);
+player* getSecondPlayer(GAME* game);
+player* getPlayerByComplexity(int complexity);
+gameSettings* getSettings(GAME* game);
+gameField* getBattlefield(GAME* game);
+
+void safeGame(GAME* thisGame); // сохраняет текущую игру
 
 
 #endif //CROSSZERO_GAME_H
