@@ -28,8 +28,7 @@ float r0=0.6f,g0=0.6f,b0=0.6f,
 float field_y=800,field_x=0;
 float cur_x=0, cur_y=800;
 
-enum {gamer,bot};
-enum {easy, medium, hard, very_hard};
+enum {GAMER, BOT};
 
 struct {
     int inside_set;
@@ -2547,7 +2546,7 @@ void draw_settings() {
 
 
 
-    if (flag_settings.first_move==gamer){
+    if (flag_settings.first_move == GAMER){
         glColor3f(1, 1, 1);
         glBegin(GL_QUADS);
         glVertex2f(327, 450);///слово ИГРОК///буква И
@@ -3345,7 +3344,7 @@ void draw_settings() {
         glVertex2f(Sedge-3,278);
         glEnd();
 
-        if(flag_settings.difficulty==easy){
+        if(flag_settings.difficulty == EASY){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(331,400);///слово ЛЕГКО///буква Л
@@ -3490,7 +3489,7 @@ void draw_settings() {
             glEnd();
 
         }
-        else if(flag_settings.difficulty==medium){
+        else if(flag_settings.difficulty == MEDIUM){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(329,400);///слово СРЕДНЕ///буква С
@@ -3646,7 +3645,7 @@ void draw_settings() {
             glVertex2f(478,378);
             glEnd();
         }
-        else if(flag_settings.difficulty==hard){
+        else if(flag_settings.difficulty == HARD){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(329,400);///слово СЛОЖНО///буква С
@@ -3814,7 +3813,7 @@ void draw_settings() {
             glVertex2f(488,378);
             glEnd();
         }
-        else if(flag_settings.difficulty==very_hard){
+        else if(flag_settings.difficulty == DARK_SOULS){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(329, 400);///фраза ОЧЕНЬ СЛОЖНО///буква О
@@ -4080,7 +4079,7 @@ void draw_settings() {
         }
     }
 
-    else if(flag_settings.first_move==bot){
+    else if(flag_settings.first_move == BOT){
         glColor3f(1, 1, 1);
         glBegin(GL_QUADS);
         glVertex2f(327, 450);///слово КОМПЬЮТЕР///буква К
@@ -4992,7 +4991,7 @@ void draw_settings() {
         glEnd();
 
 
-        if(flag_settings.difficulty==easy){
+        if(flag_settings.difficulty == EASY){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(331,400);///слово ЛЕГКО///буква Л
@@ -5137,7 +5136,7 @@ void draw_settings() {
             glEnd();
 
         }
-        else if(flag_settings.difficulty==medium){
+        else if(flag_settings.difficulty == MEDIUM){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(329,400);///слово СРЕДНЕ///буква С
@@ -5293,7 +5292,7 @@ void draw_settings() {
             glVertex2f(478,378);
             glEnd();
         }
-        else if(flag_settings.difficulty==hard){
+        else if(flag_settings.difficulty == HARD){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(329,400);///слово СЛОЖНО///буква С
@@ -5461,7 +5460,7 @@ void draw_settings() {
             glVertex2f(488,378);
             glEnd();
         }
-        else if(flag_settings.difficulty==very_hard){
+        else if(flag_settings.difficulty == DARK_SOULS){
             glColor3f(1,1,1);
             glBegin(GL_QUADS);
             glVertex2f(329, 400);///фраза ОЧЕНЬ СЛОЖНО///буква О
@@ -6184,40 +6183,45 @@ void push_special_keys (key,  x,  y){
     else if(key==GLUT_KEY_RIGHT){
         if(global_menu.inside_set){
             if(global_menu.number_string==1){
-                if(flag_settings.first_move==gamer){
-                    flag_settings.first_move=bot;
+                if(flag_settings.first_move == GAMER){
+                    flag_settings.first_move=BOT;
+                    setFirstMove(settings, BOT);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.first_move==bot){
-                    flag_settings.first_move=gamer;
+                else if(flag_settings.first_move == BOT){
+                    flag_settings.first_move=GAMER;
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
             }
             else if(global_menu.number_string==2){
-                if(flag_settings.difficulty==easy){
-                    flag_settings.difficulty=medium;
+                if(flag_settings.difficulty == EASY){
+                    flag_settings.difficulty=MEDIUM;
+                    setComplexity(settings, MEDIUM);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.difficulty==medium){
-                    flag_settings.difficulty=hard;
+                else if(flag_settings.difficulty == MEDIUM){
+                    flag_settings.difficulty=HARD;
+                    setComplexity(settings, HARD);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.difficulty==hard){
-                    flag_settings.difficulty=very_hard;
+                else if(flag_settings.difficulty == HARD){
+                    flag_settings.difficulty=DARK_SOULS;
+                    setComplexity(settings, DARK_SOULS );
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.difficulty==very_hard){
-                    flag_settings.difficulty=easy;
+                else if(flag_settings.difficulty == DARK_SOULS){
+                    flag_settings.difficulty=EASY;
+                    setComplexity(settings, EASY);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
@@ -6227,6 +6231,7 @@ void push_special_keys (key,  x,  y){
             else if(global_menu.number_string==3){
                 if(flag_settings.line_length<flag_settings.side_length) {
                     flag_settings.line_length++;
+                    setWinLineLength(settings, flag_settings.line_length);
                     memset(Line_Length, '\0', 100);
                     sprintf(Line_Length, "%d", flag_settings.line_length);
                     edge = 327;
@@ -6236,6 +6241,7 @@ void push_special_keys (key,  x,  y){
             }
             else if(global_menu.number_string==4){
                 flag_settings.side_length++;
+                setFieldSize(settings,flag_settings.side_length);
                 memset(Side_Length,'\0',100);
                 sprintf(Side_Length,"%d",flag_settings.side_length);
                 Sedge=327;
@@ -6253,40 +6259,44 @@ void push_special_keys (key,  x,  y){
     else if(key==GLUT_KEY_LEFT){
         if(global_menu.inside_set){
             if(global_menu.number_string==1){
-                if(flag_settings.first_move==gamer){
-                    flag_settings.first_move=bot;
+                if(flag_settings.first_move == GAMER){
+                    flag_settings.first_move=BOT;
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.first_move==bot){
-                    flag_settings.first_move=gamer;
+                else if(flag_settings.first_move == BOT){
+                    flag_settings.first_move=GAMER;
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
             }
             else if(global_menu.number_string==2){
-                if(flag_settings.difficulty==easy){
-                    flag_settings.difficulty=very_hard;
+                if(flag_settings.difficulty == EASY){
+                    flag_settings.difficulty=DARK_SOULS;
+                    setComplexity(settings, DARK_SOULS);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.difficulty==medium){
-                    flag_settings.difficulty=easy;
+                else if(flag_settings.difficulty == MEDIUM){
+                    flag_settings.difficulty=EASY;
+                    setComplexity(settings, EASY);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.difficulty==hard){
-                    flag_settings.difficulty=medium;
+                else if(flag_settings.difficulty == HARD){
+                    flag_settings.difficulty=MEDIUM;
+                    setComplexity(settings, MEDIUM);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
                 }
-                else if(flag_settings.difficulty==very_hard){
-                    flag_settings.difficulty=hard;
+                else if(flag_settings.difficulty == DARK_SOULS){
+                    flag_settings.difficulty=HARD;
+                    setComplexity(settings, HARD);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
@@ -6295,6 +6305,7 @@ void push_special_keys (key,  x,  y){
             else if(global_menu.number_string==3){
                 if(flag_settings.line_length>3 ) {
                     flag_settings.line_length--;
+                    setWinLineLength(settings, flag_settings.line_length);
                 }
                 memset(Line_Length,'\0',100);
                 sprintf(Line_Length,"%d",flag_settings.line_length);
@@ -6305,6 +6316,7 @@ void push_special_keys (key,  x,  y){
             else if(global_menu.number_string==4){
                 if(flag_settings.side_length>3 && flag_settings.line_length<flag_settings.side_length) {
                     flag_settings.side_length--;
+                    setFieldSize(settings,flag_settings.side_length);
                 }
                 memset(Side_Length,'\0',100);
                 sprintf(Side_Length,"%d",flag_settings.side_length);
@@ -6418,8 +6430,8 @@ void push_keyboard(key,x,y){
 }
 
 void default_gue_settings(){
-    flag_settings.first_move = gamer;
-    flag_settings.difficulty=easy;
+    flag_settings.first_move = GAMER;
+    flag_settings.difficulty=EASY;
     global_menu.number_string=1;
     global_menu.inside_set=0;
     flag_settings.line_length=3;
