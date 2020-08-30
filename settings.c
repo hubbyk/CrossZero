@@ -41,3 +41,7 @@ int getFieldSize(gameSettings* settings) {
 int getWinLineLength(gameSettings* settings) {
     return settings->winLineLength;
 }
+
+void setFirstMove(gameSettings* settings, int choice) {
+    settings->firstMove = choice;
+}

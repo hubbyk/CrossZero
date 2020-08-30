@@ -46,6 +46,7 @@ gameSettings* newSettings(); //создает новую структуру на
 void setComplexity(gameSettings*, int);
 void setFieldSize(gameSettings*, int);
 void setWinLineLength(gameSettings*, int);
+void setFirstMove(gameSettings*, int);
 /*
  * Геттеры для получения значений полей структуры gameSettings
  */
