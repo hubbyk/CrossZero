@@ -12,8 +12,11 @@ float coord = 435, edge=327, Sedge=327;
 char Line_Length[100]={'\0'};
 char Side_Length[100]={'\0'};
 char gamer_name[100]="Enter your name: \0";
+int znak=0;
 
-float icon_x=50, icon_y=750;
+int global_x=0, global_y=0, temp_global_x=0, temp_global_y=0;
+
+int local_x=0, local_y=0, temp_local_x=0, temp_local_y=0;
 
 
 float r0=0.6f,g0=0.6f,b0=0.6f,
@@ -63,35 +66,6 @@ void reshape (int w, int h)
     glLoadIdentity();
 
 }
-
-//void draw_zero(){
-//    glColor3f(1,0,0);
-//    glBegin(GL_LINE_STRIP);
-//    glLineWidth(40);
-//    float dop_x=-30, dop_y=0;
-//    for (int i=0;i<6;i++){
-//        glVertex2f(icon_x+dop_x, icon_y+dop_y);
-//        dop_x+=5;
-//        dop_y-=5;
-//    }
-//    for(int i=0; i<6; i++){
-//        glVertex2f(icon_x+dop_x, icon_y+dop_y);
-//        dop_x+=5;
-//        dop_y+=5;
-//    }
-//    for(int i=0; i<6; i++){
-//        glVertex2f(icon_x+dop_x, icon_y+dop_y);
-//        dop_x-=5;
-//        dop_y+=5;
-//    }
-//    for(int i=0; i<6; i++){
-//        glVertex2f(icon_x+dop_x, icon_y+dop_y);
-//        dop_x-=5;
-//        dop_y-=5;
-//    }
-//    glEnd();
-//}
-
 
 void enter_your_name (float x, float y)
 {
@@ -5761,103 +5735,65 @@ void draw_game_field(){
     glVertex2f(cur_x,cur_y-103);
     glVertex2f(cur_x,cur_y);
     glEnd();
-    /////////////////////////////////////////
-    glColor3f(0.2,1,1);
-    glBegin(GL_LINES);
-    glLineWidth(40);
-    //////////////////////////////////////////////
-    float dop_x=-30, dop_y=0;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x+=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y+=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    dop_x-=5;
-    dop_y-=5;
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    ///////////////////////////
-    glEnd();
-    icon_x=150;
-    icon_y=750;
-    dop_x=30;
-    dop_y=30;
-    glBegin(GL_LINES);
-    glColor3f(1, 0, 1);
-    glVertex2f(icon_x+dop_x, icon_y+dop_y);
-    glVertex2f(icon_x-dop_x, icon_y-dop_y);
-    glVertex2f(icon_x+dop_x, icon_y-dop_y);
-    glVertex2f(icon_x-dop_x, icon_y+dop_y);
+
+    local_x=cur_x/100;
+    local_y=7-(cur_y/100-1);
+
+    temp_local_x=local_x;
+    temp_local_y=local_y;
+    temp_global_x=global_x;
+    temp_global_y=global_y;
+
+    global_y-=local_y;
+    global_x-=local_x;
+
+    for (local_x=0;local_x<flag_settings.side_length;local_x++){
+        for(local_y=0;local_y<flag_settings.side_length;local_y++){
+            znak=getValueByCords(getBattlefield(thisGame), global_x, global_y);
+            if(znak==CROSS){
+                glBegin(GL_LINES);
+                glColor3f(1, 0, 1);
+                glVertex2f(local_x*100+50+30, 800-100*local_y-50+30);
+                glVertex2f(local_x*100+50-30, 800-100*local_y-50-30);
+                glVertex2f(local_x*100+50+30, 800-100*local_y-50-30);
+                glVertex2f(local_x*100+50-30, 800-100*local_y-50+30);
+                glEnd();
+            }
+            else if(znak==ZERO){
+                glColor3f(0.2,1,1);
+                glBegin(GL_QUADS);
+                glLineWidth(40);
+                glVertex2f(local_x*100+50-30,800-100*local_y-50);
+                glVertex2f(local_x*100+50, 800-100*local_y-50+30);
+                glVertex2f(local_x*100+50+30, 800-100*local_y-50);
+                glVertex2f(local_x*100+50, 800-100*local_y-50-30);
+                glColor3f(0,0,0);
+                glVertex2f(local_x*100+50-23,800-100*local_y-50);
+                glVertex2f(local_x*100+50, 800-100*local_y-50+23);
+                glVertex2f(local_x*100+50+23, 800-100*local_y-50);
+                glVertex2f(local_x*100+50, 800-100*local_y-50-23);
+                glEnd();
+            }
+            global_y++;
+        }
+        global_x++;
+        global_y=temp_global_y-temp_local_y;
+    }
+    global_x=temp_global_x-temp_local_x;
 
 
+    local_x=cur_x/100;
+    local_y=7-(cur_y/100-1);
 
+    if(flag_settings.side_length<8){
+        global_x += local_x;
+        global_y += local_y;
+    }
+    else {
+        global_x += local_x;
+        global_y += local_y;
+    }
 
-    glEnd();
-    /////////////////////////////////////////////////////////
 
     glutSwapBuffers();
     field_y=800;
@@ -5936,7 +5872,11 @@ void push_special_keys (key,  x,  y){
         else if(!global_menu.inside_set) {
 
             if (global_menu.game_on) {
-                if(cur_y<=800 && cur_y>(800-(flag_settings.side_length-1)*100) && cur_y>=200) cur_y -= 100;
+                if(global_y<(flag_settings.side_length-1)) {
+                    global_y++;
+                    if (cur_y <= 800 && cur_y > (800 - (flag_settings.side_length - 1) * 100) && cur_y >= 200)
+                        cur_y -= 100;
+                }
                 glutPostRedisplay();
             } else if (!global_menu.game_on) {
                 if (coord > 235) {
@@ -6097,8 +6037,10 @@ void push_special_keys (key,  x,  y){
         else if(!global_menu.inside_set) {
 
             if (global_menu.game_on) {
-
-                if(cur_y<800 && cur_y>=(800-(flag_settings.side_length-1)*100)) cur_y+=100;
+                if(global_y>0){
+                    global_y--;
+                    if(cur_y<800 && cur_y>=(800-(flag_settings.side_length-1)*100)) cur_y+=100;
+                }
                 glutPostRedisplay();
             }
             else if (!global_menu.game_on) {
@@ -6269,8 +6211,11 @@ void push_special_keys (key,  x,  y){
         }
 
         else if (global_menu.game_on && !global_menu.inside_set){
+            if(global_x<(flag_settings.side_length-1)) {
+                global_x++;
+                if (cur_x >= 0 && cur_x < (flag_settings.side_length - 1) * 100 && cur_x < 700) cur_x += 100;
 
-            if(cur_x>=0 && cur_x<(flag_settings.side_length-1)*100 && cur_x<700) cur_x+=100;
+            }
             glutPostRedisplay();
         }
     }
@@ -6345,12 +6290,13 @@ void push_special_keys (key,  x,  y){
         }
 
         else if (global_menu.game_on && !global_menu.inside_set){
-            if(cur_x>0 && cur_x<=(flag_settings.side_length-1)*100) cur_x-=100;
+            if(global_x>0) {
+                global_x--;
+                if (cur_x > 0 && cur_x <= (flag_settings.side_length - 1) * 100) cur_x -= 100;
+            }
             glutPostRedisplay();
         }
     }
-
-
 }
 
 void push_keyboard(key,x,y){
@@ -6366,6 +6312,10 @@ void push_keyboard(key,x,y){
                 else {
                     if (strlen(gamer_name) > 17) {
                         global_menu.game_on = 1;
+                        global_x=0;
+                        global_y=0;
+                        cur_y=800;
+                        cur_x=0;
                         thisGame=createNewGame(settings);
                         glutDisplayFunc(draw_game_field);
                         global_menu.enter_name=0;
@@ -6376,6 +6326,10 @@ void push_keyboard(key,x,y){
             }
             else if(!global_menu.enter_name) {
                 global_menu.game_on=1;
+                global_x=0;
+                global_y=0;
+                cur_y=800;
+                cur_x=0;
                 thisGame=createNewGame(settings);
                 glutDisplayFunc(draw_game_field);
                 glutPostRedisplay();
@@ -6418,6 +6372,14 @@ void push_keyboard(key,x,y){
     }
     else if(key==32){
         if(global_menu.game_on){
+            znak = getValueByCords(getBattlefield(thisGame), global_x, global_y);
+
+            if(!znak) {
+                writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
+                ///TOD ходит бот
+                glutDisplayFunc(draw_game_field);
+                glutPostRedisplay();
+            }
 
         }
     }
@@ -6449,7 +6411,6 @@ void push_keyboard(key,x,y){
             }
         }
     }
-
     else if (key=='q'){
         int mod = glutGetModifiers();
         if (mod == GLUT_ACTIVE_ALT ) {
@@ -6476,10 +6437,6 @@ void default_gue_settings(){
     Side_Length[0]='3';
 }
 
-
-
-
-
 int main(int argc, char * argv[]) {
     settings = loadDefaultSettings();
     ratingTable = loadRateTable();
@@ -6495,5 +6452,6 @@ int main(int argc, char * argv[]) {
     glutMainLoop();
     //int znak = getValueByCords(getBattlefield(thisGame), 0, 0);
     //writeValue(getBattlefield(thisGame), 0, 0, CROSS);
+
     return 0;
 }
