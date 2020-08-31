@@ -6305,20 +6305,25 @@ void push_keyboard(key,x,y){
         if (coord==435) {
             global_menu.enter_name=1;
             if(global_menu.enter_name) {
-                if(!global_menu.start_game) {
+                if(!global_menu.start_game && !global_menu.game_on) {
                     glutDisplayFunc(print_enter_your_name);
                     glutPostRedisplay();
                 }
                 else {
                     if (strlen(gamer_name) > 17) {
                         global_menu.game_on = 1;
-                        global_x=0;
-                        global_y=0;
-                        cur_y=800;
-                        cur_x=0;
-                        setPlayerName(settings, gamer_name);
-                        thisGame=createNewGame(settings, ratingTable);
+                        global_x = 0;
+                        global_y = 0;
+                        cur_y = 800;
+                        cur_x = 0;
+                        if (global_menu.start_game){
+                            thisGame = createNewGame(settings, ratingTable);
+                            global_menu.start_game=0;
+                        }
+
+
                         glutDisplayFunc(draw_game_field);
+
                         global_menu.enter_name=0;
                         glutPostRedisplay();
                     }
@@ -6331,8 +6336,7 @@ void push_keyboard(key,x,y){
                 global_y=0;
                 cur_y=800;
                 cur_x=0;
-                setPlayerName(settings, gamer_name);
-                thisGame=createNewGame(settings, ratingTable);
+                thisGame=createNewGame(settings,ratingTable);
                 glutDisplayFunc(draw_game_field);
                 glutPostRedisplay();
             }
@@ -6356,6 +6360,10 @@ void push_keyboard(key,x,y){
 
         }
         else if(coord==235){
+            ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
+            safeTable(ratingTable);
+            closeTable(ratingTable);
+            end(thisGame);
             glutDestroyWindow(1);
         }
     }
@@ -6366,9 +6374,6 @@ void push_keyboard(key,x,y){
         global_menu.inside_set=0;
         global_menu.game_on=0;
         global_menu.start_game=0;
-        ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
-        safeTable(ratingTable);
-        end(thisGame);
         glutPostRedisplay();
     }
     else if(key==32){
@@ -6418,6 +6423,7 @@ void push_keyboard(key,x,y){
             safeGame(thisGame);
             ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
+            closeTable(ratingTable);
             end(thisGame);
             glutDestroyWindow(1);
         }
