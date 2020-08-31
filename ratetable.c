@@ -12,6 +12,7 @@ tableLine* loadRateTable() {
     tableLine *ratingTable = NULL;
     char playerName[15] = {"\0"}, ch;
     int rating = 0;
+    int complexity = HUMAN;
 
     rateFile = fopen(rateFileName, "r+");
     if(rateFile == NULL) {
@@ -27,10 +28,10 @@ tableLine* loadRateTable() {
         }
         fprintf(rateFile, "Artorias 100\nEvdokim 80\nGarry 60\nBotty 40\n");
 
-        ratingTable = addLine(ratingTable, newPlayer("Artorias", 100));
-        ratingTable = addLine(ratingTable, newPlayer("Evdokim", 80));
-        ratingTable = addLine(ratingTable, newPlayer("Pokug", 60));
-        ratingTable = addLine(ratingTable, newPlayer("Botty", 40));
+        ratingTable = addLine(ratingTable, newPlayer("Artorias", 100, DARK_SOULS));
+        ratingTable = addLine(ratingTable, newPlayer("Evdokim", 80, HARD));
+        ratingTable = addLine(ratingTable, newPlayer("Pokug", 60, MEDIUM));
+        ratingTable = addLine(ratingTable, newPlayer("Botty", 40, EASY));
     }else {
         while(!feof(rateFile)) {
             for(int i = 0; (ch = (char)fgetc(rateFile)) != ' ' && !feof(rateFile); i++) {
@@ -40,10 +41,14 @@ tableLine* loadRateTable() {
                 rating = rating * 10 + (ch) - 48;
             }
             if(!feof(rateFile)) {
-                ratingTable = addLine(ratingTable, newPlayer(playerName, rating));
+                if(!strcmp(playerName, "Artorias")) complexity = DARK_SOULS;
+                if(!strcmp(playerName, "Evdokim")) complexity = HARD;
+                if(!strcmp(playerName, "Pokug")) complexity = MEDIUM;
+                if(!strcmp(playerName, "Botty")) complexity = EASY;
+                ratingTable = addLine(ratingTable, newPlayer(playerName, rating, complexity));
 
                 memset(playerName, '\0', 15);
-                rating = 0;
+                rating = 0, complexity = HUMAN;
             }
         }
     }
@@ -167,7 +172,8 @@ tableLine* removeLine(tableLine* line, player* anyPlayer) {
 }
 
 player* searchPlayerByName(tableLine* line, char* playerName) {
-    if(!strcmp(playerName, line->name)) return newPlayer(playerName, line->rate);
+    if(!line)return NULL;
+    if(!strcmp(playerName, line->name)) return newPlayer(playerName, line->rate, HUMAN);
     if(strcmp(playerName, line->name) < 0) {
         return getPlayerByName(line->left, playerName);
     }else {
@@ -176,16 +182,18 @@ player* searchPlayerByName(tableLine* line, char* playerName) {
 }
 player* getPlayerByName(tableLine* line, char* playerName) {
     tableLine* newTable = NULL;
-    player* result = NULL;
 
-    newTable = buildByName(line, newTable, playerName);
+    newTable = buildByName(line, newTable);
     return searchPlayerByName(newTable, playerName);
 }
 
-tableLine* buildByName(tableLine* line, tableLine* newLine, char* playerName) {
-    if(line->right) newLine = buildByName(line->right, newLine, playerName);
-    newLine = addLineN(newLine, newPlayer(line->name, line->rate));
-    if(line->left) newLine = buildByName(line->left, newLine, playerName);
+tableLine* buildByName(tableLine* line, tableLine* newLine) {
+    if(line) {
+        newLine = addLineN(newLine, newPlayer(line->name, line->rate, HUMAN));
+        newLine = buildByName(line->right, newLine);
+        //здесь все равно, верно выставлена сложность, или нет
+        newLine = buildByName(line->left, newLine);
+    }
     return newLine;
 }
 
@@ -203,4 +211,8 @@ void closeTable(tableLine* line) {
     if(line->right) closeTable(line->right);
     if(line->left) closeTable(line->left);
     free(line);
+}
+int getRatingByName(tableLine* line, char* name) {
+    player* anyPlayer = getPlayerByName(line, name);
+    return (anyPlayer)?getRating(anyPlayer):0;
 }

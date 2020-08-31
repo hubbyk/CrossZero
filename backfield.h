@@ -38,6 +38,4 @@ int* getValues(gameField* field);
 int* getXCords(gameField* field);
 int* getYCords(gameField* field);
 
-int** buildMiniMap(gameField* field, int sizeX, int sizeY, int cursorX, int cursorY); // создает мини матрицу
-
 #endif //CROSSZERO_BACKFIELD_H

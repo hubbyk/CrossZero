@@ -61,7 +61,8 @@ tableLine* removeLine(tableLine* line, player* anyPlayer);
 
 player* getPlayerByName(tableLine* line, char* playerName);
 player* searchPlayerByName(tableLine* line, char* playerName);
-tableLine* buildByName(tableLine* oldLine, tableLine* newLine, char* playerName);
+tableLine* buildByName(tableLine* oldLine, tableLine* newLine);
+int getRatingByName(tableLine*, char* name);
 
 void safeTable(tableLine* line);
 void writeTable(FILE* tableFile, tableLine* line);

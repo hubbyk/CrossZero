@@ -6316,7 +6316,8 @@ void push_keyboard(key,x,y){
                         global_y=0;
                         cur_y=800;
                         cur_x=0;
-                        thisGame=createNewGame(settings);
+                        setPlayerName(settings, gamer_name);
+                        thisGame=createNewGame(settings, ratingTable);
                         glutDisplayFunc(draw_game_field);
                         global_menu.enter_name=0;
                         glutPostRedisplay();
@@ -6330,7 +6331,8 @@ void push_keyboard(key,x,y){
                 global_y=0;
                 cur_y=800;
                 cur_x=0;
-                thisGame=createNewGame(settings);
+                setPlayerName(settings, gamer_name);
+                thisGame=createNewGame(settings, ratingTable);
                 glutDisplayFunc(draw_game_field);
                 glutPostRedisplay();
             }
@@ -6354,10 +6356,6 @@ void push_keyboard(key,x,y){
 
         }
         else if(coord==235){
-            ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
-            safeTable(ratingTable);
-            closeTable(ratingTable);
-            end(thisGame);
             glutDestroyWindow(1);
         }
     }
@@ -6368,6 +6366,9 @@ void push_keyboard(key,x,y){
         global_menu.inside_set=0;
         global_menu.game_on=0;
         global_menu.start_game=0;
+        ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
+        safeTable(ratingTable);
+        end(thisGame);
         glutPostRedisplay();
     }
     else if(key==32){
@@ -6417,7 +6418,6 @@ void push_keyboard(key,x,y){
             safeGame(thisGame);
             ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
-            closeTable(ratingTable);
             end(thisGame);
             glutDestroyWindow(1);
         }

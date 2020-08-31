@@ -44,15 +44,14 @@ GAME* loadSavedGame(tableLine* table) {
 
     return loadedGame;
 }
-GAME* createNewGame(gameSettings* settings) {
+GAME* createNewGame(gameSettings* settings, tableLine* line) {
     GAME* game = newGame();
     gameField* field = newGameField();
     setSettings(game, settings);
-
+    setFirstPlayer(game, newPlayer(settings->playerName, getRatingByName(line, settings->playerName), HUMAN));
     setNewMap(field, 0);
     setBattlefield(game, field);
     setSecondPlayer(game, getPlayerByComplexity(getComplexity(settings)));
-    setFirstPlayer(game, newPlayer("Noob", 0));
 
     return game;
 }
@@ -65,28 +64,6 @@ GAME* newGame() {
     return game;
 }
 
-int startGame(GAME* thisGame, tableLine* table) {
-
-//    setGameName(thisGame, "TEST");
-
-//    writeValue(getBattlefield(thisGame), 0, 0, CROSS);
-//    writeValue(getBattlefield(thisGame), 1, 1, CROSS);
-//    writeValue(getBattlefield(thisGame), 2, 2, CROSS);
-//    writeValue(getBattlefield(thisGame), 2, 0, ZERO);
-//    writeValue(getBattlefield(thisGame), 0, 2, ZERO);
-
-    writeValue(getBattlefield(thisGame), 0, 1, CROSS);
-    writeValue(getBattlefield(thisGame), 1, 0, CROSS);
-
-    safeGame(thisGame);
-
-    table = updateRateTable(table, getFirstPlayer(thisGame), 0);
-    safeTable(table);
-    closeTable(table);
-
-    end(thisGame);
-    return 1;
-}
 void safeGame(GAME* thisGame) {
     FILE *gameFile = fopen("saved_game.txt", "w");
 
@@ -145,13 +122,13 @@ player* getSecondPlayer(GAME* game) {
 player* getPlayerByComplexity(int complexity) {
     switch (complexity) {
         case EASY:
-            return newPlayer("Botty", 40);
+            return newPlayer("Botty", 40, EASY);
         case MEDIUM:
-            return newPlayer("Pokug", 60);
+            return newPlayer("Pokug", 60, MEDIUM);
         case HARD:
-            return newPlayer("Evdokim", 80);
+            return newPlayer("Evdokim", 80, HARD);
         case DARK_SOULS:
-            return newPlayer("Artorias", 100);
+            return newPlayer("Artorias", 100, DARK_SOULS);
         default:
             return NULL;
     }

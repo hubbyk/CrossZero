@@ -10,4 +10,6 @@
 #include "player.h"
 #include "string.h"
 
+enum complexity {HUMAN, EASY, MEDIUM, HARD, DARK_SOULS};
+
 #endif //CROSSZERO_MAINHEADER_H

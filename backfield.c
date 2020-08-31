@@ -41,6 +41,7 @@ void addYCord(gameField* field, int yCord, int index) {
 
 int getValueByCords(gameField* field, int xCord, int yCord) {
     for(int i = 0; i < field->gameMap->count; i++) {
+        if(xCord >= getSize(field) || yCord >= getSize(field)) return BORDER;
         if(field->gameMap->xCord[i] == xCord &&
            field->gameMap->yCord[i] == yCord) return field->gameMap->value[i];
     }
@@ -61,22 +62,4 @@ int* getXCords(gameField* field) {
 }
 int* getYCords(gameField* field) {
     return field->gameMap->yCord;
-}
-
-int** buildMiniMap(gameField* field, int sizeX, int sizeY, int cursorX, int cursorY) {
-    int** result = (int**)calloc(sizeX * sizeY, sizeof(int)),
-    startX = cursorX, startY = cursorY;
-
-    while (startX > (cursorX - sizeX / 2) && startX--);
-    while (startY > (cursorY - sizeY / 2) && startY--);
-    while (startX + sizeX / 2 > field->size && startX--);
-    while (startY + sizeY / 2 > field->size && startY--);
-
-    for(int i = 0; i < field->size; i++) {
-        for(int j = 0; j < field->size; j++) {
-            result[i][j] = getValueByCords(field, i, j);
-        }
-    }
-
-    return result;
 }

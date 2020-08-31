@@ -18,7 +18,7 @@ typedef struct {
 }GAME;
 
 GAME* newGame();
-GAME* createNewGame(gameSettings* settings);
+GAME* createNewGame(gameSettings* settings, tableLine* line);
 GAME* loadSavedGame(tableLine* table);
 
 int startGame(GAME* thisGame, tableLine* table); // начинает игру

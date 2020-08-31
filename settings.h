@@ -22,7 +22,6 @@
  * Посмотреть все эти функции можно ниже
  */
 
-enum complexity {HUMAN, EASY, MEDIUM, HARD, DARK_SOULS};
 /*
  * НАСТРОЙКИ ПО УМОЛЧАНИЮ
  * сложность: средняя
@@ -30,6 +29,7 @@ enum complexity {HUMAN, EASY, MEDIUM, HARD, DARK_SOULS};
  * игроки: player vs Pokug
  */
 typedef struct {
+    char playerName[15];
     int complexity;  //уровень сложности
     int fieldSize; //параметры поля
     int winLineLength; //длина выигрышной цепочки
@@ -47,10 +47,12 @@ void setComplexity(gameSettings*, int);
 void setFieldSize(gameSettings*, int);
 void setWinLineLength(gameSettings*, int);
 void setFirstMove(gameSettings*, int);
+void setPlayerName(gameSettings*, char* buf);
 /*
  * Геттеры для получения значений полей структуры gameSettings
  */
 int getComplexity(gameSettings*);
 int getFieldSize(gameSettings*);
 int getWinLineLength(gameSettings*);
+
 #endif //CROSSZERO_SETTINGS_H

@@ -8,10 +8,11 @@
 #ifndef CROSSZERO_GREATMIND_H
 #define CROSSZERO_GREATMIND_H
 
-typedef struct {
+typedef struct Attack{
     int power;
     int potential;
     int divider;
+
 }Attack;
 
 typedef struct {

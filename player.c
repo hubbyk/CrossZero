@@ -7,10 +7,11 @@
 #include <malloc.h>
 #include <string.h>
 
-player* newPlayer(char* playerName, int rating) {
+player* newPlayer(char* playerName, int rating, int compl) {
     player *anyPlayer = (player*) malloc(sizeof(*anyPlayer));
     setName(anyPlayer, playerName);
     setRating(anyPlayer, rating);
+    setComplexityToPlayer(anyPlayer, compl);
     return anyPlayer;
 }
 
@@ -30,4 +31,6 @@ int getRating(player* anyPlayer) {
     return anyPlayer->rating;
 }
 
-
+void setComplexityToPlayer(player* anyPlayer, int value) {
+    anyPlayer->complexity = value;
+}

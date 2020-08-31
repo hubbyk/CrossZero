@@ -27,9 +27,17 @@ void setComplexity(gameSettings* settings, int comp) {
 void setFieldSize(gameSettings* settings, int fieldSize) {
     settings->fieldSize = fieldSize;
 }
-
+void setFirstMove(gameSettings* settings, int choice) {
+    settings->firstMove = choice;
+}
 void setWinLineLength(gameSettings* settings, int winLineLength) {
     settings->winLineLength = winLineLength;
+}
+void setPlayerName(gameSettings* settings, char* buf) {
+    char* cursor = buf + 17;
+    for(int i = 0; *cursor; i++, cursor++) {
+        settings->playerName[i] = *cursor;
+    }
 }
 
 int getComplexity(gameSettings* settings) {
@@ -42,6 +50,3 @@ int getWinLineLength(gameSettings* settings) {
     return settings->winLineLength;
 }
 
-void setFirstMove(gameSettings* settings, int choice) {
-    settings->firstMove = choice;
-}
