@@ -5,6 +5,8 @@
 #include <GLUT/GLUT.h>  /*Для Mac OS*/
 #endif
 
+GAME *thisGame = NULL;
+int delta=0;
 
 float coord = 435, edge=327, Sedge=327;
 char Line_Length[100]={'\0'};
@@ -5760,7 +5762,7 @@ void draw_game_field(){
     glVertex2f(cur_x,cur_y);
     glEnd();
     /////////////////////////////////////////
-    glColor3f(1,0,1);
+    glColor3f(0.2,1,1);
     glBegin(GL_LINES);
     glLineWidth(40);
     //////////////////////////////////////////////
@@ -5838,6 +5840,22 @@ void draw_game_field(){
     dop_x-=5;
     dop_y-=5;
     glVertex2f(icon_x+dop_x, icon_y+dop_y);
+    ///////////////////////////
+    glEnd();
+    icon_x=150;
+    icon_y=750;
+    dop_x=30;
+    dop_y=30;
+    glBegin(GL_LINES);
+    glColor3f(1, 0, 1);
+    glVertex2f(icon_x+dop_x, icon_y+dop_y);
+    glVertex2f(icon_x-dop_x, icon_y-dop_y);
+    glVertex2f(icon_x+dop_x, icon_y-dop_y);
+    glVertex2f(icon_x-dop_x, icon_y+dop_y);
+
+
+
+
     glEnd();
     /////////////////////////////////////////////////////////
 
@@ -6336,6 +6354,7 @@ void push_special_keys (key,  x,  y){
 }
 
 void push_keyboard(key,x,y){
+
     if (key == 13) {
         if (coord==435) {
             global_menu.enter_name=1;
@@ -6347,8 +6366,8 @@ void push_keyboard(key,x,y){
                 else {
                     if (strlen(gamer_name) > 17) {
                         global_menu.game_on = 1;
+                        thisGame=createNewGame(settings);
                         glutDisplayFunc(draw_game_field);
-
                         global_menu.enter_name=0;
                         glutPostRedisplay();
                     }
@@ -6357,6 +6376,7 @@ void push_keyboard(key,x,y){
             }
             else if(!global_menu.enter_name) {
                 global_menu.game_on=1;
+                thisGame=createNewGame(settings);
                 glutDisplayFunc(draw_game_field);
                 glutPostRedisplay();
             }
@@ -6380,6 +6400,10 @@ void push_keyboard(key,x,y){
 
         }
         else if(coord==235){
+            ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
+            safeTable(ratingTable);
+            closeTable(ratingTable);
+            end(thisGame);
             glutDestroyWindow(1);
         }
     }
@@ -6391,6 +6415,11 @@ void push_keyboard(key,x,y){
         global_menu.game_on=0;
         global_menu.start_game=0;
         glutPostRedisplay();
+    }
+    else if(key==32){
+        if(global_menu.game_on){
+
+        }
     }
     else if(global_menu.enter_name){
 
@@ -6424,6 +6453,11 @@ void push_keyboard(key,x,y){
     else if (key=='q'){
         int mod = glutGetModifiers();
         if (mod == GLUT_ACTIVE_ALT ) {
+            safeGame(thisGame);
+            ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
+            safeTable(ratingTable);
+            closeTable(ratingTable);
+            end(thisGame);
             glutDestroyWindow(1);
         }
     }
@@ -6459,6 +6493,7 @@ int main(int argc, char * argv[]) {
     glutSpecialFunc(push_special_keys);
     glutKeyboardFunc(push_keyboard);
     glutMainLoop();
-
+    //int znak = getValueByCords(getBattlefield(thisGame), 0, 0);
+    //writeValue(getBattlefield(thisGame), 0, 0, CROSS);
     return 0;
 }
