@@ -41,7 +41,8 @@ void addYCord(gameField* field, int yCord, int index) {
 
 int getValueByCords(gameField* field, int xCord, int yCord) {
     for(int i = 0; i < field->gameMap->count; i++) {
-        if(xCord >= getSize(field) || yCord >= getSize(field)) return BORDER;
+        if(xCord >= getSize(field) || yCord >= getSize(field) ||
+        xCord < 0 || yCord < 0) return BORDER;
         if(field->gameMap->xCord[i] == xCord &&
            field->gameMap->yCord[i] == yCord) return field->gameMap->value[i];
     }

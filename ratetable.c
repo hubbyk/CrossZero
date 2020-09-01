@@ -71,7 +71,7 @@ tableLine* newTableLine(char *playerName, int playerRating) {
 tableLine* updateRateTable(tableLine* line, player* anyPlayer, int delta) {
     line = removeLine(line, anyPlayer);
     anyPlayer->rating += delta;
-    addLine(line, anyPlayer);
+    line = addLine(line, anyPlayer);
     return line;
 }
 
@@ -96,7 +96,7 @@ tableLine* rotateRight(tableLine* line) {
 }
 tableLine* rotateLeft(tableLine* line) {
     tableLine* temp = line->right;
-    line->right = line->left;
+    line->right = temp->left;
     temp->left = line;
     fixHeight(temp);
     fixHeight(line);

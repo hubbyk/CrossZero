@@ -6316,6 +6316,7 @@ void push_keyboard(key,x,y){
                         global_y = 0;
                         cur_y = 800;
                         cur_x = 0;
+                        setPlayerName(settings, gamer_name);
                         if (global_menu.start_game){
                             thisGame = createNewGame(settings, ratingTable);
                             global_menu.start_game=0;
@@ -6371,6 +6372,12 @@ void push_keyboard(key,x,y){
     else if(key==27){
         glutDisplayFunc(drawing_main_menu_one_dark);
         memset(&gamer_name[17], '\0', 15);
+        if(global_menu.game_on == 1) {
+            ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
+            safeTable(ratingTable);
+            closeTable(ratingTable);
+            end(thisGame);
+        }
         global_menu.inside_set=0;
         global_menu.game_on=0;
         global_menu.start_game=0;
@@ -6382,7 +6389,8 @@ void push_keyboard(key,x,y){
 
             if(!znak) {
                 writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
-                ///TOD ходит бот
+                ///TODO ходит бот
+                godCreation(getBattlefield(thisGame), 0, 0);
                 glutDisplayFunc(draw_game_field);
                 glutPostRedisplay();
             }

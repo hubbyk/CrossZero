@@ -51,6 +51,7 @@ GAME* createNewGame(gameSettings* settings, tableLine* line) {
     setFirstPlayer(game, newPlayer(settings->playerName, getRatingByName(line, settings->playerName), HUMAN));
     setNewMap(field, 0);
     setBattlefield(game, field);
+    field->size = settings->fieldSize;
     setSecondPlayer(game, getPlayerByComplexity(getComplexity(settings)));
 
     return game;
