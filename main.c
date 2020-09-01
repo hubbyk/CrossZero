@@ -6395,10 +6395,8 @@ void push_keyboard(key,x,y){
 
         }
         else if(coord==235){
-            ratingTable = updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
             closeTable(ratingTable);
-            end(thisGame);
             glutDestroyWindow(1);
         }
     }
@@ -6409,8 +6407,6 @@ void push_keyboard(key,x,y){
         if(global_menu.game_on == 1) {
             ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
-            closeTable(ratingTable);
-            end(thisGame);
         }
         global_menu.inside_set=0;
         global_menu.game_on=0;
@@ -6440,7 +6436,7 @@ void push_keyboard(key,x,y){
                         return;
                     }
                     setFirstMove(getSettings(thisGame), BOT);
-                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), ZERO, &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
@@ -6457,7 +6453,7 @@ void push_keyboard(key,x,y){
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                 }else {
-                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), ZERO, &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
@@ -6531,7 +6527,6 @@ void push_keyboard(key,x,y){
             safeGame(thisGame);
             ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
-            closeTable(ratingTable);
             end(thisGame);
             glutDestroyWindow(1);
         }

@@ -37,9 +37,9 @@ Attack* newAttack() {
     new->next = NULL;
     return new;
 }
-int countAttackWeight(Attack* attack, int winLineLength) {
-    if(attack->power == winLineLength) return (attack->power * 40) / attack->divider;
-    if(attack->power  == winLineLength - 1 && attack->potential == 2) return (attack->power  * 25) / attack->divider;
+int countAttackWeight(Attack* attack, int winLineLength, int isYourFigure) {
+    if(attack->power == winLineLength) return (attack->power * 1000) / attack->divider;
+    if(attack->power  == winLineLength - 1 && attack->potential == 2) return (attack->power  * 200) / attack->divider;
     return (attack->power  + attack->potential * 2) / attack->divider;
 }
 AttackCollector* newAttackCollector(int winLineLength) {
@@ -134,14 +134,14 @@ Attack* collectAttacksOnLine(gameField* field,
                           int curX, int curY, int figure, int dX, int dY,  int winLineLength) {
     AttackCollector* collector = newAttackCollector(winLineLength);
     getAttacks(collector, field, curX, curY, figure, dX, dY);
-    return filteredAttacks(collector);
+    return filteredAttacks(collector, winLineLength);
 }
-Attack* filteredAttacks(AttackCollector* collector) {
+Attack* filteredAttacks(AttackCollector* collector, int winLineLength) {
     AttackCollector* costyl = newAttackCollector(1);
-    if(collector->attackPlace >= 5) {
+    if(collector->attackPlace >= winLineLength) {
         for(Attack* attack = collector->attacks; attack;) {
             if(attack->power && attack->potential ||
-                    attack->power >= 5) {
+                    attack->power >= winLineLength) {
                 Attack* atkCopy = newAttack();
                 memcpy(atkCopy, attack, sizeof(Attack));
                 atkCopy->next = NULL;
@@ -197,18 +197,18 @@ int isBreakPoint(Attack* attacks, int winLineLength) {
     }
     return 0;
 }
-int countWeight(gameField* field, int xCord, int yCord, int winLineLength) {
+int countWeight(gameField* field, int yourFigure, int xCord, int yCord, int winLineLength) {
     AttackCollection* attackCollection = getAllAttacks(field, xCord, yCord, winLineLength);
     if(!attackCollection) return 0;
     int weight = 0;
 
-    weight += count(attackCollection->attacksZero, ZERO, winLineLength);
-    weight += count(attackCollection->attacksCross, CROSS, winLineLength);
+    weight += count(attackCollection->attacksZero, ZERO, winLineLength, yourFigure == ZERO);
+    weight += count(attackCollection->attacksCross, CROSS, winLineLength, yourFigure == CROSS);
 
     return weight;
 }
 
-int count(Attack** attacks, int figure, int winLineLength) {
+int count(Attack** attacks, int figure, int winLineLength, int isYourFigure) {
     int weight = 0, breakPoints = 0;
 
     for(int i = 0; i < 4; i++) {
@@ -221,7 +221,7 @@ int count(Attack** attacks, int figure, int winLineLength) {
         for(Attack* attack= attacks[i]; attack;) {
             if(attack->power > winLineLength) attack->power = winLineLength;
             if(attack->power == winLineLength && figure == ZERO) weight += 100;
-            weight += countAttackWeight(attack, winLineLength);
+            weight += countAttackWeight(attack, winLineLength, isYourFigure);
             attack = attack->next;
         }
     }
@@ -236,12 +236,12 @@ Attack* getAttack(Attack* start, int index) {
     return NULL;
 }
 
-void godCreation(gameField* field, int winLineLength, int* resX, int* resY) {
-    int maxWeight = 0, curWeight, resultX, resultY;
+void godCreation(gameField* field, int winLineLength, int yourFigure, int* resX, int* resY) {
+    int maxWeight = 0, curWeight, resultX = 0, resultY = 0;
 
     for(int i = 0; i < field->size; i++) {
         for (int j = 0; j < field->size; j++) {
-            curWeight = countWeight(field, j, i, winLineLength);
+            curWeight = countWeight(field,yourFigure, j, i, winLineLength);
             if(curWeight > maxWeight) {
                 maxWeight = curWeight;
                 resultX = j; resultY = i;
