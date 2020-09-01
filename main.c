@@ -8,6 +8,11 @@
 GAME *thisGame = NULL;
 int delta=0;
 
+char win[10]="Win! \0";
+char lose[10]="Lose :( \0";
+char raw[10]="Raw! \0";
+
+
 float coord = 435, edge=327, Sedge=327;
 char Line_Length[100]={'\0'};
 char Side_Length[100]={'\0'};
@@ -87,6 +92,25 @@ void print_enter_your_name() {
     glLineWidth(40);
     glutSwapBuffers ();
 };
+
+void print_game_result(float x, float y, char *str){
+    int j =strlen(str);
+    glColor3f(1, 0, 0);
+    glRasterPos2f(x, y);
+    for (int i = 0; i < j; i++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]);
+    }
+}
+
+void game_result(){
+    glClearColor(0.1,0.1,0.1,0.0f);
+    glLineWidth(1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //print_text(100,700);
+    glutSwapBuffers ();
+}
+
 
 void print_text (float x, float y)
 {
