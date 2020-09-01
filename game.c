@@ -10,14 +10,15 @@ GAME* loadSavedGame(tableLine* table) {
     GAME* loadedGame = newGame();
     gameField* field = newGameField();
     gameSettings* settings = newSettings();
-    int complexity, fieldSize, winLineLength, countOfNonVoidCell;
+    int complexity, fieldSize, winLineLength, countOfNonVoidCell, firstMove;
     char playerName[15];
 
-    fscanf(gameFile, "%d %d %d\n",
-           &complexity, &fieldSize, &winLineLength);
+    fscanf(gameFile, "%d %d %d %d\n",
+           &complexity, &fieldSize, &winLineLength, &firstMove);
     setComplexity(settings, complexity);
     setFieldSize(settings, fieldSize);
     setWinLineLength(settings, winLineLength);
+    setFirstMove(settings, firstMove);
 
     fscanf(gameFile, "%s\n%d\n", playerName, &countOfNonVoidCell);
     setFirstPlayer(loadedGame, getPlayerByName(table, playerName));
@@ -69,9 +70,9 @@ void safeGame(GAME* thisGame) {
     FILE *gameFile = fopen("saved_game.txt", "w");
 
     // записываем настройки игры
-    fprintf(gameFile, "%d %d %d\n",
+    fprintf(gameFile, "%d %d %d %d\n",
             getComplexity(getSettings(thisGame)), getFieldSize(getSettings(thisGame)),
-            getWinLineLength(getSettings(thisGame)));
+            getWinLineLength(getSettings(thisGame)), getFirstMove(getSettings(thisGame)));
 
     // записываем имена игроков
     fprintf(gameFile, "%s\n%d\n", getName(getFirstPlayer(thisGame)), getCountOfNonVoidCells(getBattlefield(thisGame)));

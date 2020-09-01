@@ -235,7 +235,7 @@ Attack* getAttack(Attack* start, int index) {
     return NULL;
 }
 
-void godCreation(gameField* field, int lastX, int lastY) {
+void godCreation(gameField* field, int lastX, int lastY, int* resX, int* resY) {
     int maxWeight = 0, curWeight, resultX, resultY;
 
     for(int i = 0; i < field->size; i++) {
@@ -247,6 +247,6 @@ void godCreation(gameField* field, int lastX, int lastY) {
             }
         }
     }
-
+    *resX = resultX; *resY = resultY;
     writeValue(field, resultX, resultY, ZERO);
 }

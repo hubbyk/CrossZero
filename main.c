@@ -13,6 +13,7 @@ char Line_Length[100]={'\0'};
 char Side_Length[100]={'\0'};
 char gamer_name[100]="Enter your name: \0";
 int znak=0;
+int isRaw = 0;
 
 int global_x=0, global_y=0, temp_global_x=0, temp_global_y=0;
 
@@ -6388,9 +6389,51 @@ void push_keyboard(key,x,y){
             znak = getValueByCords(getBattlefield(thisGame), global_x, global_y);
 
             if(!znak) {
-                writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
-                ///TODO ходит бот
-                godCreation(getBattlefield(thisGame), 0, 0);
+                int botX = 0, botY = 0;
+                if(getFirstMove(getSettings(thisGame)) == GAMER) {
+                    writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
+                    ++isRaw;
+                    if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        //TODO надпись RAW
+                    }
+                    if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
+                        delta = 10;
+                        //TODO надпись WIN
+                    }
+                    setFirstMove(getSettings(thisGame), BOT);
+                    godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
+                    ++isRaw;
+                    if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        //TODO надпись RAW
+                    }
+                    if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
+                        delta = 0;
+                        //TODO надпись LOSE
+                    }
+                    setFirstMove(getSettings(thisGame), GAMER);
+                }else {
+                    godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
+                    ++isRaw;
+                    if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        //TODO надпись RAW
+                    }
+                    if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
+                        delta = 0;
+                        //TODO надпись LOSE
+                    }
+                    ++isRaw;
+                    if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        //TODO надпись RAW
+                    }
+                    setFirstMove(getSettings(thisGame), GAMER);
+                    writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
+                    if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
+                        delta = 10;
+                        //TODO надпись WIN
+                    }
+                    ++isRaw;
+                    setFirstMove(getSettings(thisGame), BOT);
+                }
                 glutDisplayFunc(draw_game_field);
                 glutPostRedisplay();
             }

@@ -55,5 +55,5 @@ int getWeight(gameField* field, int xCord, int yCord);
 int countWeight();
 int count(Attack** attacks, int figure);
 
-void godCreation(gameField* field, int lastX, int lastY);
+void godCreation(gameField* field, int lastX, int lastY, int* resX, int* resY);
 #endif //CROSSZERO_GREATMIND_H

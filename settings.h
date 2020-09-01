@@ -54,5 +54,6 @@ void setPlayerName(gameSettings*, char* buf);
 int getComplexity(gameSettings*);
 int getFieldSize(gameSettings*);
 int getWinLineLength(gameSettings*);
+int getFirstMove(gameSettings*);
 
 #endif //CROSSZERO_SETTINGS_H
