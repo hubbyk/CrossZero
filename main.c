@@ -74,6 +74,28 @@ void reshape (int w, int h)
 
 }
 
+void control_information (float x, float y)
+{
+    char control[100]="Press TAB to open control information\0";
+    int j = strlen(control);
+    glColor3f(1, 1, 1);
+    glRasterPos2f(x, y);
+    for (int i = 0; i < j; i++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, control[i]);
+    }
+}
+
+void print_control_information() {
+    glClearColor(0.1,0.1,0.1,0.0f);
+    glLineWidth(1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    control_information(200,700);
+    glLineWidth(40);
+    glutSwapBuffers ();
+}
+
+
 void enter_your_name (float x, float y)
 {
     int j = strlen(gamer_name);
@@ -83,6 +105,33 @@ void enter_your_name (float x, float y)
     {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, gamer_name[i]);
     }
+}
+
+void rules (float x, float y)
+{
+    char RULES[100]="Press space to make a move\n"
+                    "Press ESC to exit to the main menu\n"
+                    "Press Alt+q to exit and save game\0";
+    int j = strlen(RULES);
+    glColor3f(1, 0, 0);
+    glRasterPos2f(x, y);
+    for (int i = 0; i < j; i++)
+    {
+        if(RULES[i]=='\n'){
+            y-=50;
+            glRasterPos2f(x,y);
+        }
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, RULES[i]);
+    }
+}
+
+void print_rules() {
+    glClearColor(0.1,0.1,0.1,0.0f);
+    glLineWidth(1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    rules(200,400);
+    glLineWidth(40);
+    glutSwapBuffers ();
 }
 
 void print_enter_your_name() {
@@ -119,7 +168,6 @@ void game_result(){
     }
     glutSwapBuffers ();
 }
-
 
 void print_text (float x, float y)
 {
@@ -164,6 +212,8 @@ void drawing_main_menu_one_dark()
     glClearColor(0.1,0.1,0.1,0.0f);
     glLineWidth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    print_control_information();
+    glLineWidth(1);
     glColor3f(r0,g0,b0);
     glBegin(GL_QUADS);///слово ПРОДОЛЖИТЬ///буква П
     glVertex2f(42,500);
@@ -1993,6 +2043,452 @@ void draw_about_game () {
     glVertex2f(450,370);
     glVertex2f(450,400);
     glVertex2f(447,400);
+
+    glVertex2f(42,320);///2020 год///цифра 2
+    glVertex2f(42+11,320);
+    glVertex2f(42+11,323);
+    glVertex2f(42,323);
+    glVertex2f(42,320);
+    glVertex2f(42+3,320);
+    glVertex2f(42+3,337);
+    glVertex2f(42,337);
+    glVertex2f(42+11,337);
+    glVertex2f(42,337);
+    glVertex2f(42,334);
+    glVertex2f(42+11,334);
+    glVertex2f(42+8,334);
+    glVertex2f(42+11,334);
+    glVertex2f(42+11,350);
+    glVertex2f(42+8,350);
+    glVertex2f(42,350);
+    glVertex2f(42+11,350);
+    glVertex2f(42+11,347);
+    glVertex2f(42,347);
+    glVertex2f(63,320);///цифра 0
+    glVertex2f(63+11,320);
+    glVertex2f(63+11,323);
+    glVertex2f(63,323);
+    glVertex2f(63,320);
+    glVertex2f(63+3,320);
+    glVertex2f(63+3,350);
+    glVertex2f(63,350);
+    glVertex2f(63+11,320);
+    glVertex2f(63+8,320);
+    glVertex2f(63+8,350);
+    glVertex2f(63+11,350);
+    glVertex2f(63,350);
+    glVertex2f(63+11,350);
+    glVertex2f(63+11,347);
+    glVertex2f(63,347);
+    glVertex2f(84,320);///цифра 2
+    glVertex2f(84+11,320);
+    glVertex2f(84+11,323);
+    glVertex2f(84,323);
+    glVertex2f(84,320);
+    glVertex2f(84+3,320);
+    glVertex2f(84+3,337);
+    glVertex2f(84,337);
+    glVertex2f(84+11,337);
+    glVertex2f(84,337);
+    glVertex2f(84,334);
+    glVertex2f(84+11,334);
+    glVertex2f(84+8,334);
+    glVertex2f(84+11,334);
+    glVertex2f(84+11,350);
+    glVertex2f(84+8,350);
+    glVertex2f(84,350);
+    glVertex2f(84+11,350);
+    glVertex2f(84+11,347);
+    glVertex2f(84,347);
+    glVertex2f(105,320);//цифра 0
+    glVertex2f(105+11,320);
+    glVertex2f(105+11,323);
+    glVertex2f(105,323);
+    glVertex2f(105,320);
+    glVertex2f(105+3,320);
+    glVertex2f(105+3,350);
+    glVertex2f(105,350);
+    glVertex2f(105+11,320);
+    glVertex2f(105+8,320);
+    glVertex2f(105+8,350);
+    glVertex2f(105+11,350);
+    glVertex2f(105,350);
+    glVertex2f(105+11,350);
+    glVertex2f(105+11,347);
+    glVertex2f(105,347);
+    glVertex2f(136,350);///ГОД////буква Г
+    glVertex2f(139,350);
+    glVertex2f(139,320);
+    glVertex2f(136,320);
+    glVertex2f(139,350);
+    glVertex2f(150,350);
+    glVertex2f(150,347);
+    glVertex2f(139,347);
+    glVertex2f(162,350);///буква О
+    glVertex2f(173,350);
+    glVertex2f(173,347);
+    glVertex2f(162,347);
+    glVertex2f(162,320);
+    glVertex2f(173,320);
+    glVertex2f(173,323);
+    glVertex2f(162,323);
+    glVertex2f(160,346);
+    glVertex2f(163,346);
+    glVertex2f(163,324);
+    glVertex2f(160,324);
+    glVertex2f(161,348);
+    glVertex2f(164,348);
+    glVertex2f(164,345);
+    glVertex2f(161,345);
+    glVertex2f(161,322);
+    glVertex2f(164,322);
+    glVertex2f(164,325);
+    glVertex2f(161,325);
+    glVertex2f(175,346);
+    glVertex2f(172,346);
+    glVertex2f(172,324);
+    glVertex2f(175,324);
+    glVertex2f(174,348);
+    glVertex2f(171,348);
+    glVertex2f(171,345);
+    glVertex2f(174,345);
+    glVertex2f(174,322);
+    glVertex2f(171,322);
+    glVertex2f(171,325);
+    glVertex2f(174,325);
+    glVertex2f(185,320);///буква Д
+    glVertex2f(188,320);
+    glVertex2f(188,324);
+    glVertex2f(185,324);
+    glVertex2f(201,320);
+    glVertex2f(204,320);
+    glVertex2f(204,324);
+    glVertex2f(201,324);
+    glVertex2f(185,324);
+    glVertex2f(204,324);
+    glVertex2f(204,327);
+    glVertex2f(185,327);
+    glVertex2f(201,324);
+    glVertex2f(198,324);
+    glVertex2f(198,350);
+    glVertex2f(201,350);
+    glVertex2f(198,350);
+    glVertex2f(193,350);
+    glVertex2f(193,347);
+    glVertex2f(198,347);
+    glVertex2f(192,348);
+    glVertex2f(195,348);
+    glVertex2f(195,345);
+    glVertex2f(192,345);
+    glVertex2f(191,341);
+    glVertex2f(194,341);
+    glVertex2f(194,345);
+    glVertex2f(191,345);
+    glVertex2f(190,341);
+    glVertex2f(193,341);
+    glVertex2f(193,338);
+    glVertex2f(190,338);
+    glVertex2f(189,334);
+    glVertex2f(192,334);
+    glVertex2f(192,338);
+    glVertex2f(189,338);
+    glVertex2f(188,334);
+    glVertex2f(191,334);
+    glVertex2f(191,331);
+    glVertex2f(188,331);
+    glVertex2f(187,327);
+    glVertex2f(190,327);
+    glVertex2f(190,331);
+    glVertex2f(187,331);
+    glVertex2f(44,300);///СПБПУ///буква С
+    glVertex2f(56,300);
+    glVertex2f(56,297);
+    glVertex2f(44,297);
+    glVertex2f(44,270);
+    glVertex2f(56,270);
+    glVertex2f(56,273);
+    glVertex2f(44,273);
+    glVertex2f(42,296);
+    glVertex2f(45,296);
+    glVertex2f(45,274);
+    glVertex2f(42,274);
+    glVertex2f(43,298);
+    glVertex2f(46,298);
+    glVertex2f(46,295);
+    glVertex2f(42,295);
+    glVertex2f(42,272);
+    glVertex2f(46,272);
+    glVertex2f(46,275);
+    glVertex2f(42,275);
+    glVertex2f(66,300);///БУКВА П
+    glVertex2f(69,300);
+    glVertex2f(69,270);
+    glVertex2f(66,270);
+    glVertex2f(69,300);
+    glVertex2f(79,300);
+    glVertex2f(79,297);
+    glVertex2f(69,297);
+    glVertex2f(79,300);
+    glVertex2f(82,300);
+    glVertex2f(82,270);
+    glVertex2f(79,270);
+    glVertex2f(92,300);///буква Б
+    glVertex2f(95,300);
+    glVertex2f(95,270);
+    glVertex2f(92,270);
+    glVertex2f(95,270);
+    glVertex2f(105,270);
+    glVertex2f(105,273);
+    glVertex2f(95,273);
+    glVertex2f(105,271);
+    glVertex2f(108,271);
+    glVertex2f(108,286);
+    glVertex2f(105,286);
+    glVertex2f(105,285);
+    glVertex2f(95,285);
+    glVertex2f(95,288);
+    glVertex2f(105,288);
+    glVertex2f(92,300);
+    glVertex2f(106,300);
+    glVertex2f(106,297);
+    glVertex2f(92,297);
+    glVertex2f(118,300);///БУКВА П
+    glVertex2f(121,300);
+    glVertex2f(121,270);
+    glVertex2f(118,270);
+    glVertex2f(121,300);
+    glVertex2f(131,300);
+    glVertex2f(131,297);
+    glVertex2f(121,297);
+    glVertex2f(131,300);
+    glVertex2f(134,300);
+    glVertex2f(134,270);
+    glVertex2f(131,270);
+    glVertex2f(144,270);///буква У
+    glVertex2f(154,270);
+    glVertex2f(154,273);
+    glVertex2f(144,273);
+    glVertex2f(153,271);
+    glVertex2f(157,271);
+    glVertex2f(157,276);
+    glVertex2f(153,276);
+    glVertex2f(156,274);
+    glVertex2f(160,274);
+    glVertex2f(160,279);
+    glVertex2f(156,279);
+    glVertex2f(160,277);
+    glVertex2f(163,277);
+    glVertex2f(163,300);
+    glVertex2f(160,300);
+    glVertex2f(144,283);
+    glVertex2f(147,283);
+    glVertex2f(147,300);
+    glVertex2f(144,300);
+    glVertex2f(145,285);
+    glVertex2f(150,285);
+    glVertex2f(150,281);
+    glVertex2f(145,281);
+    glVertex2f(148,282);
+    glVertex2f(153,282);
+    glVertex2f(153,279);
+    glVertex2f(148,279);
+    glVertex2f(148,279);
+    glVertex2f(160,279);
+    glVertex2f(160,282);
+    glVertex2f(148,282);
+    glVertex2f(185,300);///ИКБ///буква И
+    glVertex2f(188,300);
+    glVertex2f(188,270);
+    glVertex2f(185,270);
+    glVertex2f(199,300);
+    glVertex2f(202,300);
+    glVertex2f(202,270);
+    glVertex2f(199,270);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex2f(188,270);
+    glVertex2f(199,290);
+    glVertex2f(188,271);
+    glVertex2f(199,291);
+    glVertex2f(188,272);
+    glVertex2f(199,292);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex2f(212,300);///буква К
+    glVertex2f(215,300);
+    glVertex2f(215,270);
+    glVertex2f(212,270);
+    glVertex2f(215,287);
+    glVertex2f(217,287);
+    glVertex2f(217,284);
+    glVertex2f(215,284);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex2f(217,287);
+    glVertex2f(224,300);
+    glVertex2f(217,287);
+    glVertex2f(225,300);
+    glVertex2f(217,286);
+    glVertex2f(226,300);
+    glVertex2f(217,286);
+    glVertex2f(227,300);
+    glVertex2f(217,285);
+    glVertex2f(224,270);
+    glVertex2f(217,285);
+    glVertex2f(225,270);
+    glVertex2f(217,284);
+    glVertex2f(226,270);
+    glVertex2f(217,284);
+    glVertex2f(227,270);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex2f(237,300);///буква Б
+    glVertex2f(240,300);
+    glVertex2f(240, 270);
+    glVertex2f(237,270);
+    glVertex2f(240,270);
+    glVertex2f(250,270);
+    glVertex2f(250,273);
+    glVertex2f(240,273);
+    glVertex2f(250,271);
+    glVertex2f(253,271);
+    glVertex2f(253,286);
+    glVertex2f(250,286);
+    glVertex2f(250,285);
+    glVertex2f(240,285);
+    glVertex2f(240,288);
+    glVertex2f(250,288);
+    glVertex2f(237,300);
+    glVertex2f(251,300);
+    glVertex2f(251,297);
+    glVertex2f(237,297);
+    glVertex2f(288,300);///ВШКИЗИ///буква В
+    glVertex2f(291,300);
+    glVertex2f(291,270);
+    glVertex2f(288,270);
+    glVertex2f(291,270);
+    glVertex2f(301,270);
+    glVertex2f(301,273);
+    glVertex2f(291,273);
+    glVertex2f(301,271);
+    glVertex2f(304,271);
+    glVertex2f(304,286);
+    glVertex2f(301,286);
+    glVertex2f(301,285);
+    glVertex2f(291,285);
+    glVertex2f(291,288);
+    glVertex2f(301,288);
+    glVertex2f(288,300);
+    glVertex2f(299,300);
+    glVertex2f(299,297);
+    glVertex2f(288,297);
+    glVertex2f(298,297);
+    glVertex2f(301,297);
+    glVertex2f(301,286);
+    glVertex2f(298,286);
+    glVertex2f(314,270);///буква Ш
+    glVertex2f(317,270);
+    glVertex2f(317,300);
+    glVertex2f(314,300);
+    glVertex2f(322,270);
+    glVertex2f(325,270);
+    glVertex2f(325,300);
+    glVertex2f(322,300);
+    glVertex2f(330,270);
+    glVertex2f(333,270);
+    glVertex2f(333,300);
+    glVertex2f(330,300);
+    glVertex2f(314,270);
+    glVertex2f(333,270);
+    glVertex2f(333,273);
+    glVertex2f(314,273);
+    glVertex2f(343,300);///буква К
+    glVertex2f(346,300);
+    glVertex2f(346,270);
+    glVertex2f(343,270);
+    glVertex2f(346,287);
+    glVertex2f(348,287);
+    glVertex2f(348,284);
+    glVertex2f(346,284);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex2f(348,287);
+    glVertex2f(355,300);
+    glVertex2f(348,287);
+    glVertex2f(356,300);
+    glVertex2f(348,286);
+    glVertex2f(357,300);
+    glVertex2f(348,286);
+    glVertex2f(358,300);
+    glVertex2f(348,285);
+    glVertex2f(355,270);
+    glVertex2f(348,285);
+    glVertex2f(356,270);
+    glVertex2f(348,284);
+    glVertex2f(357,270);
+    glVertex2f(348,284);
+    glVertex2f(358,270);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex2f(368,300);///буква И
+    glVertex2f(371,300);
+    glVertex2f(371,270);
+    glVertex2f(368,270);
+    glVertex2f(382,300);
+    glVertex2f(385,300);
+    glVertex2f(385,270);
+    glVertex2f(382,270);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex2f(371,270);
+    glVertex2f(382,290);
+    glVertex2f(371,271);
+    glVertex2f(382,291);
+    glVertex2f(371,272);
+    glVertex2f(382,292);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex2f(392,270);///буква З
+    glVertex2f(405,270);
+    glVertex2f(405,273);
+    glVertex2f(392,273);
+    glVertex2f(405,271);
+    glVertex2f(408,271);
+    glVertex2f(408,286);
+    glVertex2f(405,286);
+    glVertex2f(405,285);
+    glVertex2f(395,285);
+    glVertex2f(395,288);
+    glVertex2f(405,288);
+    glVertex2f(392,300);
+    glVertex2f(403,300);
+    glVertex2f(403,297);
+    glVertex2f(392,297);
+    glVertex2f(402,297);
+    glVertex2f(405,297);
+    glVertex2f(405,286);
+    glVertex2f(402,286);
+    glVertex2f(418,300);///буква И
+    glVertex2f(421,300);
+    glVertex2f(421,270);
+    glVertex2f(418,270);
+    glVertex2f(432,300);
+    glVertex2f(435,300);
+    glVertex2f(435,270);
+    glVertex2f(432,270);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex2f(421,270);
+    glVertex2f(432,290);
+    glVertex2f(421,271);
+    glVertex2f(432,291);
+    glVertex2f(421,272);
+    glVertex2f(432,292);
+
+
+
+
+
     glEnd();
     glutSwapBuffers();
 
@@ -5745,7 +6241,7 @@ void draw_settings() {
 void draw_game_field(){
     glClearColor(0.1,0.1,0.1,0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3f(0.9,0.5,0);
+    glColor3f(1,0,0);
     glLineWidth(10);
     glBegin(GL_LINES);
     for (int i=0;i<(flag_settings.side_length+1);i++){
@@ -6331,6 +6827,7 @@ void push_special_keys (key,  x,  y){
             glutPostRedisplay();
         }
     }
+
 }
 
 void push_keyboard(key,x,y){
@@ -6493,6 +6990,9 @@ void push_keyboard(key,x,y){
 
         }
     }
+
+
+
     else if(global_menu.enter_name){
 
         if(key==27){
@@ -6521,6 +7021,11 @@ void push_keyboard(key,x,y){
             }
         }
     }
+    else if(key==9){
+        glutDisplayFunc(print_rules);
+        glutPostRedisplay();
+    }
+
     else if (key=='q'){
         int mod = glutGetModifiers();
         if (mod == GLUT_ACTIVE_ALT ) {
@@ -6559,8 +7064,5 @@ int main(int argc, char * argv[]) {
     glutSpecialFunc(push_special_keys);
     glutKeyboardFunc(push_keyboard);
     glutMainLoop();
-    //int znak = getValueByCords(getBattlefield(thisGame), 0, 0);
-    //writeValue(getBattlefield(thisGame), 0, 0, CROSS);
-
     return 0;
 }
