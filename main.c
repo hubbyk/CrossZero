@@ -108,7 +108,15 @@ void game_result(){
     glClearColor(0.1,0.1,0.1,0.0f);
     glLineWidth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //print_text(100,700);
+    if(gameResult==PLAYER_1_WIN){
+        print_game_result(300,400,win);
+    }
+    else if(gameResult==PLAYER_2_WIN){
+        print_game_result(300,400,lose);
+    }
+    else if(gameResult==RAW){
+        print_game_result(300,400,raw);
+    }
     glutSwapBuffers ();
 }
 
@@ -6420,24 +6428,28 @@ void push_keyboard(key,x,y){
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
-                        //TODO надпись RAW
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
                         delta = 10;
                         gameResult = PLAYER_1_WIN;
-                        //TODO надпись WIN
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     setFirstMove(getSettings(thisGame), BOT);
                     godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
-                        //TODO надпись RAW
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
                         delta = 0;
                         gameResult = PLAYER_2_WIN;
-                        //TODO надпись LOSE
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                 }else {
@@ -6445,24 +6457,28 @@ void push_keyboard(key,x,y){
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
-                        //TODO надпись RAW
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
                         delta = 0;
                         gameResult = PLAYER_2_WIN;
-                        //TODO надпись LOSE
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
-                        //TODO надпись RAW
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                     writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
                     if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
                         delta = 10;
                         gameResult = PLAYER_1_WIN;
-                        //TODO надпись WIN
+                        glutDisplayFunc(game_result);
+                        glutPostRedisplay();
                     }
                     ++isRaw;
                     setFirstMove(getSettings(thisGame), BOT);
