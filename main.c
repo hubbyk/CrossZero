@@ -19,6 +19,7 @@ char Side_Length[100]={'\0'};
 char gamer_name[100]="Enter your name: \0";
 int znak=0;
 int isRaw = 0;
+int gameResult = 0;
 
 int global_x=0, global_y=0, temp_global_x=0, temp_global_y=0;
 
@@ -6418,20 +6419,24 @@ void push_keyboard(key,x,y){
                     writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        gameResult = RAW;
                         //TODO надпись RAW
                     }
                     if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
                         delta = 10;
+                        gameResult = PLAYER_1_WIN;
                         //TODO надпись WIN
                     }
                     setFirstMove(getSettings(thisGame), BOT);
                     godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        gameResult = RAW;
                         //TODO надпись RAW
                     }
                     if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
                         delta = 0;
+                        gameResult = PLAYER_2_WIN;
                         //TODO надпись LOSE
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
@@ -6439,20 +6444,24 @@ void push_keyboard(key,x,y){
                     godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        gameResult = RAW;
                         //TODO надпись RAW
                     }
                     if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
                         delta = 0;
+                        gameResult = PLAYER_2_WIN;
                         //TODO надпись LOSE
                     }
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                        gameResult = RAW;
                         //TODO надпись RAW
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                     writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
                     if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
                         delta = 10;
+                        gameResult = PLAYER_1_WIN;
                         //TODO надпись WIN
                     }
                     ++isRaw;
