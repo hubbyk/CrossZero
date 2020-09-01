@@ -87,12 +87,9 @@ void control_information (float x, float y)
 }
 
 void print_control_information() {
-    glClearColor(0.1,0.1,0.1,0.0f);
     glLineWidth(1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     control_information(200,700);
     glLineWidth(40);
-    glutSwapBuffers ();
 }
 
 
@@ -109,7 +106,7 @@ void enter_your_name (float x, float y)
 
 void rules (float x, float y)
 {
-    char RULES[100]="Press space to make a move\n"
+    char RULES[100]=" Press space to make a move\n"
                     "Press ESC to exit to the main menu\n"
                     "Press Alt+q to exit and save game\0";
     int j = strlen(RULES);
@@ -6852,7 +6849,11 @@ void push_keyboard(key,x,y){
                             thisGame = createNewGame(settings, ratingTable);
                             global_menu.start_game=0;
                         }
-
+                        int costylX = 0, costylY = 0;
+                        if(getFirstMove(getSettings(thisGame)) == BOT) {
+                            godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), ZERO, &costylX, &costylY);
+                            setFirstMove(getSettings(thisGame), GAMER);
+                        }
 
                         glutDisplayFunc(draw_game_field);
 
