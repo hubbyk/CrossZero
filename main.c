@@ -6395,7 +6395,7 @@ void push_keyboard(key,x,y){
 
         }
         else if(coord==235){
-            ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
+            ratingTable = updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
             closeTable(ratingTable);
             end(thisGame);
@@ -6430,47 +6430,54 @@ void push_keyboard(key,x,y){
                         gameResult = RAW;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
                         delta = 10;
                         gameResult = PLAYER_1_WIN;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     setFirstMove(getSettings(thisGame), BOT);
-                    godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
                         delta = 0;
                         gameResult = PLAYER_2_WIN;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                 }else {
-                    godCreation(getBattlefield(thisGame), 0, 0, &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     if(checkWin(getBattlefield(thisGame), botX, botY, getWinLineLength(getSettings(thisGame)))) {
                         delta = 0;
                         gameResult = PLAYER_2_WIN;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                     writeValue(getBattlefield(thisGame), global_x, global_y, CROSS);
@@ -6479,6 +6486,7 @@ void push_keyboard(key,x,y){
                         gameResult = PLAYER_1_WIN;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
+                        return;
                     }
                     ++isRaw;
                     setFirstMove(getSettings(thisGame), BOT);

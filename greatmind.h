@@ -16,6 +16,7 @@ typedef struct Attack{
 }Attack;
 
 typedef struct {
+    int winLineLength;
     int figure;
     int checkBorder;
     int distance;
@@ -35,7 +36,7 @@ int checkLine(gameField* field, int lastX, int lastY, int dX, int dY);
 Attack* newAttack();
 int countAttackWeigth(int winLineLength, int power, int potential);
 
-AttackCollector* newAttackCollector();
+AttackCollector* newAttackCollector(int winLineLength);
 
 Attack* getAttacks(AttackCollector* collector, gameField* field,
                     int curX, int curY, int figure, int dX, int dY);
@@ -44,16 +45,16 @@ int checkCell(AttackCollector* collector, gameField* field, int x, int y);
 void addAttack(AttackCollector* collector);
 void turnAround(AttackCollector* collector);
 Attack* collectAttacksOnLine(gameField* field,
-                          int curX, int curY, int figure, int dX, int dY);
+                          int curX, int curY, int figure, int dX, int dY, int winLineLength);
 Attack* filteredAttacks(AttackCollector* collector);
-AttackCollection* getAllAttacks(gameField* field, int xCord, int yCord);
+AttackCollection* getAllAttacks(gameField* field, int xCord, int yCord, int winLineLength);
 AttackCollection* newCollection();
 
-int isBreakPoint(Attack* attack);
+int isBreakPoint(Attack* attack, int winLineLength);
 
-int getWeight(gameField* field, int xCord, int yCord);
-int countWeight();
-int count(Attack** attacks, int figure);
+//int getWeight(gameField* field, int xCord, int yCord);
+int countWeight(gameField* field, int xCord, int yCord, int winLineLength);
+int count(Attack** attacks, int figure, int winLineLength);
 
-void godCreation(gameField* field, int lastX, int lastY, int* resX, int* resY);
+void godCreation(gameField* field, int winLineLength, int* resX, int* resY);
 #endif //CROSSZERO_GREATMIND_H

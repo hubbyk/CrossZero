@@ -65,6 +65,8 @@ tableLine* newTableLine(char *playerName, int playerRating) {
     line->rate = playerRating;
     line->right = NULL;
     line->left = NULL;
+    line->next = NULL;
+
     return line;
 }
 
@@ -122,8 +124,15 @@ tableLine* addLine(tableLine* line, player* newPlayer) {
     if(!line) return newTableLine(getName(newPlayer), getRating(newPlayer));
     if(getRating(newPlayer) < line->rate) {
         line->left = addLine(line->left, newPlayer);
-    }else {
+    }else if(getRating(newPlayer) > line->rate){
         line->right = addLine(line->right, newPlayer);
+    }else {
+        tableLine* prev = line, *cur = line->next;
+        while(cur) {
+            prev = cur;
+            cur = cur->next;
+        }
+        prev->next = newTableLine(getName(newPlayer), getRating(newPlayer));
     }
     return balance(line);
 }
@@ -152,19 +161,36 @@ tableLine* removeLine(tableLine* line, player* anyPlayer) {
         line->right = removeLine(line->right, anyPlayer);
     }else {
         if(!strcmp(getName(anyPlayer), line->name)) {
-            tableLine* l = line->left;
-            tableLine* r = line->right;
+            if(line->next) {
+                tableLine* old = line;
+                line = line->next;
+                free(old);
+                return line;
+            }else {
+                tableLine *l = line->left;
+                tableLine *r = line->right;
 
-            free(line);
+                free(line);
 
-            if(!r) return l;
-            tableLine* min = findMin(r);
-            min->right = removeMin(r);
-            min->left = l;
+                if (!r) return l;
+                tableLine *min = findMin(r);
+                min->right = removeMin(r);
+                min->left = l;
 
-            return balance(l);
+                return balance(l);
+            }
         }else {
-            line->right = removeLine(line->right, anyPlayer);
+            tableLine* prev = line, *cur = line->next;
+            while (cur) {
+                if(!strcmp(getName(anyPlayer), cur->name)){
+                    tableLine* old = cur;
+                    prev->next = cur->next;
+                    free(old);
+                }
+                prev = cur;
+                cur = cur->next;
+            }
+            return line;
         }
     }
 
@@ -189,6 +215,11 @@ player* getPlayerByName(tableLine* line, char* playerName) {
 
 tableLine* buildByName(tableLine* line, tableLine* newLine) {
     if(line) {
+        tableLine* cur = line->next;
+        while(cur) {
+            newLine = addLineN(newLine, newPlayer(cur->name, cur->rate, HUMAN));
+            cur = cur->next;
+        }
         newLine = addLineN(newLine, newPlayer(line->name, line->rate, HUMAN));
         newLine = buildByName(line->right, newLine);
         //здесь все равно, верно выставлена сложность, или нет

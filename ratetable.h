@@ -34,6 +34,7 @@ typedef struct tableLine{
     int height;
     struct tableLine* left;
     struct tableLine* right;
+    struct tableLine* next;
 }tableLine;
 
 tableLine* newTableLine(char *playerName, int playerRating); //создаем новую строку в таблице с именем и рейтингом

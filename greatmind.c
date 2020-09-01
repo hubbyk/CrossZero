@@ -42,7 +42,7 @@ int countAttackWeight(Attack* attack, int winLineLength) {
     if(attack->power  == winLineLength - 1 && attack->potential == 2) return (attack->power  * 25) / attack->divider;
     return (attack->power  + attack->potential * 2) / attack->divider;
 }
-AttackCollector* newAttackCollector() {
+AttackCollector* newAttackCollector(int winLineLength) {
     AttackCollector* new = (AttackCollector*)malloc(sizeof(AttackCollector));
     new->figure = CROSS;
     new->attacks = NULL;
@@ -50,6 +50,7 @@ AttackCollector* newAttackCollector() {
     new->curAttack = newAttack();
     new->checkBorder = 0;
     new->attackPlace = 1;
+    new->winLineLength = winLineLength;
     return new;
 }
 
@@ -58,15 +59,15 @@ Attack* getAttacks(AttackCollector* collector, gameField* field,
     collector->figure = figure;
 
     for(int curX = cellX - dX, curY = cellY - dY;
-        (curX - cellX < 0)?cellX - curX:curX - cellX <= 5 &&
-                                                (curY - cellY < 0)?cellY - curY:curY - cellY <= 5;
+        (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
+                                                (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
         curX -= dX, curY -= dY) if(checkCell(collector, field, curX, curY)) break;
 
     turnAround(collector);
 
     for(int curX = cellX + dX, curY = cellY + dY;
-        (curX - cellX < 0)?cellX - curX:curX - cellX <= 5 &&
-                                        (curY - cellY < 0)?cellY - curY:curY - cellY <= 5;
+        (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
+                                        (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
         curX += dX, curY += dY) if(checkCell(collector, field, curX, curY)) break;
 
     return collector->attacks;
@@ -95,9 +96,9 @@ int checkCell(AttackCollector* collector, gameField* field, int x, int y) {
         collector->curAttack->divider++;
         collector->attackPlace++;
     }
-    if(collector->distance == 4 && figure == collector->figure) {
+    if(collector->distance == collector->winLineLength - 1 && figure == collector->figure) {
         collector->checkBorder = 1;
-    }else if(collector->distance == 5) {
+    }else if(collector->distance == collector->winLineLength) {
         if(collector->checkBorder) {
             if(figure == collector->figure || figure == 0)
                 collector->curAttack->potential++;
@@ -130,13 +131,13 @@ void turnAround(AttackCollector* collector) {
 }
 
 Attack* collectAttacksOnLine(gameField* field,
-                          int curX, int curY, int figure, int dX, int dY) {
-    AttackCollector* collector = newAttackCollector();
+                          int curX, int curY, int figure, int dX, int dY,  int winLineLength) {
+    AttackCollector* collector = newAttackCollector(winLineLength);
     getAttacks(collector, field, curX, curY, figure, dX, dY);
     return filteredAttacks(collector);
 }
 Attack* filteredAttacks(AttackCollector* collector) {
-    AttackCollector* costyl = newAttackCollector();
+    AttackCollector* costyl = newAttackCollector(1);
     if(collector->attackPlace >= 5) {
         for(Attack* attack = collector->attacks; attack;) {
             if(attack->power && attack->potential ||
@@ -154,19 +155,19 @@ Attack* filteredAttacks(AttackCollector* collector) {
 
     return costyl->attacks;
 }
-AttackCollection* getAllAttacks(gameField* field, int xCord, int yCord) {
+AttackCollection* getAllAttacks(gameField* field, int xCord, int yCord, int winLineLength) {
     if(getValueByCords(field, xCord, yCord)) return NULL;
     AttackCollection* result = newCollection();
 
-    result->attacksCross[0] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, 0);
-    result->attacksCross[1] = collectAttacksOnLine(field, xCord, yCord, CROSS, 0, 1);
-    result->attacksCross[2] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, -1);
-    result->attacksCross[3] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, 1);
+    result->attacksCross[0] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, 0, winLineLength);
+    result->attacksCross[1] = collectAttacksOnLine(field, xCord, yCord, CROSS, 0, 1, winLineLength);
+    result->attacksCross[2] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, -1, winLineLength);
+    result->attacksCross[3] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, 1, winLineLength);
 
-    result->attacksZero[0] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, 0);
-    result->attacksZero[1] = collectAttacksOnLine(field, xCord, yCord, ZERO, 0, 1);
-    result->attacksZero[2] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, -1);
-    result->attacksZero[3] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, 1);
+    result->attacksZero[0] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, 0, winLineLength);
+    result->attacksZero[1] = collectAttacksOnLine(field, xCord, yCord, ZERO, 0, 1, winLineLength);
+    result->attacksZero[2] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, -1, winLineLength);
+    result->attacksZero[3] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, 1, winLineLength);
 
     return result;
 }
@@ -174,7 +175,7 @@ AttackCollection* newCollection() {
     return (AttackCollection*)malloc(sizeof(AttackCollection));
 }
 
-int isBreakPoint(Attack* attacks) {
+int isBreakPoint(Attack* attacks, int winLineLength) {
     if(!attacks) return 0;
     Attack* centAttack;
 
@@ -183,44 +184,44 @@ int isBreakPoint(Attack* attacks) {
         attack = attack->next;
     }
 
-    if(centAttack->power >=4) return 1;
-    if(centAttack->power >= 3 && centAttack->potential ==  2) return 1;
+    if(centAttack->power >= winLineLength - 1) return 1;
+    if(centAttack->power >= winLineLength - 2 && centAttack->potential ==  2) return 1;
 
     for(Attack* attack = attacks; attack;) {
         int score = centAttack->power;
         if(attack->divider == 2) {
             if(centAttack->potential == 2 && attack->potential == 2) ++score;
-            if(score + attack->power >= 4) return 1;
+            if(score + attack->power >= winLineLength - 1) return 1;
         }
         attack = attack->next;
     }
     return 0;
 }
-int countWeight(gameField* field, int xCord, int yCord) {
-    AttackCollection* attackCollection = getAllAttacks(field, xCord, yCord);
+int countWeight(gameField* field, int xCord, int yCord, int winLineLength) {
+    AttackCollection* attackCollection = getAllAttacks(field, xCord, yCord, winLineLength);
     if(!attackCollection) return 0;
     int weight = 0;
 
-    weight += count(attackCollection->attacksZero, ZERO);
-    weight += count(attackCollection->attacksCross, CROSS);
+    weight += count(attackCollection->attacksZero, ZERO, winLineLength);
+    weight += count(attackCollection->attacksCross, CROSS, winLineLength);
 
     return weight;
 }
 
-int count(Attack** attacks, int figure) {
+int count(Attack** attacks, int figure, int winLineLength) {
     int weight = 0, breakPoints = 0;
 
     for(int i = 0; i < 4; i++) {
-        if(isBreakPoint(attacks[i])) {
+        if(isBreakPoint(attacks[i], winLineLength)) {
             if(++breakPoints == 2) {
                 weight += 100;
                 return weight;
             }
         }
         for(Attack* attack= attacks[i]; attack;) {
-            if(attack->power > 5) attack->power = 5;
-            if(attack->power == 5 && figure == ZERO) weight += 100;
-            weight += countAttackWeight(attack, 5);
+            if(attack->power > winLineLength) attack->power = winLineLength;
+            if(attack->power == winLineLength && figure == ZERO) weight += 100;
+            weight += countAttackWeight(attack, winLineLength);
             attack = attack->next;
         }
     }
@@ -235,12 +236,12 @@ Attack* getAttack(Attack* start, int index) {
     return NULL;
 }
 
-void godCreation(gameField* field, int lastX, int lastY, int* resX, int* resY) {
+void godCreation(gameField* field, int winLineLength, int* resX, int* resY) {
     int maxWeight = 0, curWeight, resultX, resultY;
 
     for(int i = 0; i < field->size; i++) {
         for (int j = 0; j < field->size; j++) {
-            curWeight = countWeight(field, j, i);
+            curWeight = countWeight(field, j, i, winLineLength);
             if(curWeight > maxWeight) {
                 maxWeight = curWeight;
                 resultX = j; resultY = i;
