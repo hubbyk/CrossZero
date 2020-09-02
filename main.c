@@ -7109,7 +7109,6 @@ void push_keyboard(key,x,y){
             cur_y=800;
             cur_x=0;
             thisGame=loadSavedGame(ratingTable);
-
             flag_settings.difficulty=getComplexity(getSettings(thisGame));
             flag_settings.side_length=getFieldSize(getSettings(thisGame));
             flag_settings.line_length=getWinLineLength(getSettings(thisGame));

@@ -22,6 +22,7 @@ GAME* loadSavedGame(tableLine* table) {
 
     fscanf(gameFile, "%s\n%d\n", playerName, &countOfNonVoidCell);
     setFirstPlayer(loadedGame, getPlayerByName(table, playerName));
+    if(!getFirstPlayer(loadedGame)) setFirstPlayer(loadedGame, newPlayer(playerName, 0, HUMAN));
     setSecondPlayer(loadedGame, getPlayerByComplexity(getComplexity(settings)));
 
     setNewMap(field, countOfNonVoidCell);
