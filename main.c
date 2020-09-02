@@ -7108,8 +7108,15 @@ void push_keyboard(key,x,y){
             global_y=0;
             cur_y=800;
             cur_x=0;
-            ///TODO прочекать загрузку поля(отрисовывает правильно)
             thisGame=loadSavedGame(ratingTable);
+
+            flag_settings.difficulty=getComplexity(getSettings(thisGame));
+            flag_settings.side_length=getFieldSize(getSettings(thisGame));
+            flag_settings.line_length=getWinLineLength(getSettings(thisGame));
+            flag_settings.first_move=getFirstMove(getSettings(thisGame));
+            sprintf(Line_Length, "%d", flag_settings.line_length);
+            sprintf(Side_Length, "%d", flag_settings.side_length);
+
             glutDisplayFunc(draw_game_field);
             glutPostRedisplay();
         }
@@ -7335,16 +7342,28 @@ void push_keyboard(key,x,y){
 }
 
 void default_gue_settings(){
-    flag_settings.first_move = GAMER;
-    flag_settings.difficulty=EASY;
+
+//    if(help_for_game) {
+//        flag_settings.difficulty = getComplexity(getSettings(thisGame));
+//        flag_settings.side_length = getFieldSize(getSettings(thisGame));
+//        flag_settings.line_length = getWinLineLength(getSettings(thisGame));
+//        flag_settings.first_move = getFirstMove(getSettings(thisGame));
+//        sprintf(Line_Length, "%d", flag_settings.line_length);
+//        sprintf(Side_Length, "%d", flag_settings.side_length);
+//    }
+
+//    else {
+        flag_settings.first_move = GAMER;
+        flag_settings.difficulty = EASY;
+        flag_settings.line_length = 3;
+        flag_settings.side_length = 3;
+        Line_Length[0] = '3';
+        Side_Length[0] = '3';
+  //  }
     global_menu.number_string=1;
     global_menu.inside_set=0;
-    flag_settings.line_length=3;
-    flag_settings.side_length=3;
     global_menu.game_on=0;
     global_menu.start_game=0;
-    Line_Length[0]='3';
-    Side_Length[0]='3';
 }
 
 int main(int argc, char * argv[]) {
