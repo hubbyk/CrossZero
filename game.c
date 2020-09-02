@@ -38,6 +38,8 @@ GAME* loadSavedGame(tableLine* table) {
         addYCord(field, fgetc(gameFile) - 48, i);
     }
 
+    field->size = getFieldSize(settings);
+
     fclose(gameFile);
 
     setBattlefield(loadedGame, field);
