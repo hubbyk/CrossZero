@@ -6849,6 +6849,7 @@ void push_keyboard(key,x,y){
                         setPlayerName(settings, gamer_name);
                         if (global_menu.start_game){
                             thisGame = createNewGame(settings, ratingTable);
+                            isRaw = 0;
                             global_menu.start_game=0;
                         }
                         int costylX = 0, costylY = 0;
@@ -6908,6 +6909,7 @@ void push_keyboard(key,x,y){
             ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
         }
+        //end(thisGame);
         global_menu.inside_set=0;
         global_menu.game_on=0;
         global_menu.start_game=0;
