@@ -7,12 +7,14 @@
 
 GAME *thisGame = NULL;
 int delta=0;
+FILE *file = NULL;
 
 char win[10]="Win! \0";
 char lose[10]="Lose :( \0";
 char raw[10]="Raw! \0";
 
-
+int isSaveGame=0;
+int help_for_game=0;
 float coord = 435, edge=327, Sedge=327;
 char Line_Length[100]={'\0'};
 char Side_Length[100]={'\0'};
@@ -123,7 +125,6 @@ void rules (float x, float y)
 }
 
 void print_rules() {
-    //TODO не нажимать TAB во время игры
     glClearColor(0.1,0.1,0.1,0.0f);
     glLineWidth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,6 +213,16 @@ void drawing_main_menu_one_dark()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     print_control_information();
     glLineWidth(1);
+    if(help_for_game){
+        r0=1;
+        g0=0;
+        b0=0;
+        r=0;
+        g=1;
+        b=1;
+        coord=485;
+        help_for_game=0;
+    }
     glColor3f(r0,g0,b0);
     glBegin(GL_QUADS);///слово ПРОДОЛЖИТЬ///буква П
     glVertex2f(42,500);
@@ -6407,91 +6418,221 @@ void push_special_keys (key,  x,  y){
                 }
                 glutPostRedisplay();
             } else if (!global_menu.game_on) {
-                if (coord > 235) {
-                    coord -= 50;
-                    if (coord == 385) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 1;
-                        g1 = 0;
-                        b1 = 0;
-                        r2 = 0;
-                        g2 = 1;
-                        b2 = 1;
-                        r3 = 0;
-                        g3 = 1;
-                        b3 = 1;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
-                    } else if (coord == 335) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 0;
-                        g1 = 1;
-                        b1 = 1;
-                        r2 = 1;
-                        g2 = 0;
-                        b2 = 0;
-                        r3 = 0;
-                        g3 = 1;
-                        b3 = 1;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
-                    } else if (coord == 285) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 0;
-                        g1 = 1;
-                        b1 = 1;
-                        r2 = 0;
-                        g2 = 1;
-                        b2 = 1;
-                        r3 = 1;
-                        g3 = 0;
-                        b3 = 0;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
-                    } else if (coord == 235) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 0;
-                        g1 = 1;
-                        b1 = 1;
-                        r2 = 0;
-                        g2 = 1;
-                        b2 = 1;
-                        r3 = 0;
-                        g3 = 1;
-                        b3 = 1;
-                        r4 = 1;
-                        g4 = 0;
-                        b4 = 0;
-                    }
-                } else {
-                    coord += 200;
-                    r = 1;
-                    g = 0;
-                    b = 0;
-                    r1 = 0;
-                    g1 = 1;
-                    b1 = 1;
-                    r2 = 0;
-                    g2 = 1;
-                    b2 = 1;
-                    r3 = 0;
-                    g3 = 1;
-                    b3 = 1;
-                    r4 = 0;
-                    g4 = 1;
-                    b4 = 1;
-                }
+
+
+
+              if(!isSaveGame) {
+                  if (coord > 235) {
+                      coord -= 50;
+                      if (coord == 385) {
+                          r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 1;
+                          g1 = 0;
+                          b1 = 0;
+                          r2 = 0;
+                          g2 = 1;
+                          b2 = 1;
+                          r3 = 0;
+                          g3 = 1;
+                          b3 = 1;
+                          r4 = 0;
+                          g4 = 1;
+                          b4 = 1;
+                      } else if (coord == 335) {
+                          r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 0;
+                          g1 = 1;
+                          b1 = 1;
+                          r2 = 1;
+                          g2 = 0;
+                          b2 = 0;
+                          r3 = 0;
+                          g3 = 1;
+                          b3 = 1;
+                          r4 = 0;
+                          g4 = 1;
+                          b4 = 1;
+                      } else if (coord == 285) {
+                          r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 0;
+                          g1 = 1;
+                          b1 = 1;
+                          r2 = 0;
+                          g2 = 1;
+                          b2 = 1;
+                          r3 = 1;
+                          g3 = 0;
+                          b3 = 0;
+                          r4 = 0;
+                          g4 = 1;
+                          b4 = 1;
+                      } else if (coord == 235) {
+                          r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 0;
+                          g1 = 1;
+                          b1 = 1;
+                          r2 = 0;
+                          g2 = 1;
+                          b2 = 1;
+                          r3 = 0;
+                          g3 = 1;
+                          b3 = 1;
+                          r4 = 1;
+                          g4 = 0;
+                          b4 = 0;
+                      }
+                  } else {
+                      coord += 200;
+                      r = 1;
+                      g = 0;
+                      b = 0;
+                      r1 = 0;
+                      g1 = 1;
+                      b1 = 1;
+                      r2 = 0;
+                      g2 = 1;
+                      b2 = 1;
+                      r3 = 0;
+                      g3 = 1;
+                      b3 = 1;
+                      r4 = 0;
+                      g4 = 1;
+                      b4 = 1;
+                  }
+              }
+
+              else if(isSaveGame){
+                  if (coord > 235) {
+                      coord -= 50;
+                     if(coord==435){
+                         r0=0;
+                         g0=1;
+                         b0=1;
+                         r = 1;
+                         g = 0;
+                         b = 0;
+                         r1 = 0;
+                         g1 = 1;
+                         b1 = 1;
+                         r2 = 0;
+                         g2 = 1;
+                         b2 = 1;
+                         r3 = 0;
+                         g3 = 1;
+                         b3 = 1;
+                         r4 = 0;
+                         g4 = 1;
+                         b4 = 1;
+                     }
+
+                     else if (coord == 385) {
+                         r0=0;
+                         g0=1;
+                         b0=1;
+                         r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 1;
+                          g1 = 0;
+                          b1 = 0;
+                          r2 = 0;
+                          g2 = 1;
+                          b2 = 1;
+                          r3 = 0;
+                          g3 = 1;
+                          b3 = 1;
+                          r4 = 0;
+                          g4 = 1;
+                          b4 = 1;
+                      } else if (coord == 335) {
+                         r0=0;
+                         g0=1;
+                         b0=1;
+                         r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 0;
+                          g1 = 1;
+                          b1 = 1;
+                          r2 = 1;
+                          g2 = 0;
+                          b2 = 0;
+                          r3 = 0;
+                          g3 = 1;
+                          b3 = 1;
+                          r4 = 0;
+                          g4 = 1;
+                          b4 = 1;
+                      } else if (coord == 285) {
+                         r0=0;
+                         g0=1;
+                         b0=1;
+                         r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 0;
+                          g1 = 1;
+                          b1 = 1;
+                          r2 = 0;
+                          g2 = 1;
+                          b2 = 1;
+                          r3 = 1;
+                          g3 = 0;
+                          b3 = 0;
+                          r4 = 0;
+                          g4 = 1;
+                          b4 = 1;
+                      } else if (coord == 235) {
+                         r0=0;
+                         g0=1;
+                         b0=1;
+                         r = 0;
+                          g = 1;
+                          b = 1;
+                          r1 = 0;
+                          g1 = 1;
+                          b1 = 1;
+                          r2 = 0;
+                          g2 = 1;
+                          b2 = 1;
+                          r3 = 0;
+                          g3 = 1;
+                          b3 = 1;
+                          r4 = 1;
+                          g4 = 0;
+                          b4 = 0;
+                      }
+                  } else {
+                      coord += 250;
+                      r0=1;
+                      g0=0;
+                      b0=0;
+                      r = 0;
+                      g = 1;
+                      b = 1;
+                      r1 = 0;
+                      g1 = 1;
+                      b1 = 1;
+                      r2 = 0;
+                      g2 = 1;
+                      b2 = 1;
+                      r3 = 0;
+                      g3 = 1;
+                      b3 = 1;
+                      r4 = 0;
+                      g4 = 1;
+                      b4 = 1;
+                  }
+              }
+
             }
         }
 
@@ -6573,12 +6714,115 @@ void push_special_keys (key,  x,  y){
             }
             else if (!global_menu.game_on) {
 
-                if (coord < 435) {
-                    coord += 50;
-                    if (coord == 435) {
-                        r = 1;
-                        g = 0;
-                        b = 0;
+                if(isSaveGame) {
+                    if (coord < 485) {
+                        coord += 50;
+                        if(coord==485){
+                            r0=1;
+                            g0=0;
+                            b0=0;
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        }
+                        else if (coord == 435) {
+                            r0=0;
+                            g0=1;
+                            b0=1;
+                            r = 1;
+                            g = 0;
+                            b = 0;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        } else if (coord == 385) {
+                            r0=0;
+                            g0=1;
+                            b0=1;
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 1;
+                            g1 = 0;
+                            b1 = 0;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        } else if (coord == 335) {
+                            r0=0;
+                            g0=1;
+                            b0=1;
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 1;
+                            g2 = 0;
+                            b2 = 0;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        } else if (coord == 285) {
+                            r0=0;
+                            g0=1;
+                            b0=1;
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 1;
+                            g3 = 0;
+                            b3 = 0;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        }
+
+                    } else {
+                        coord -= 250;
+                        r0=0;
+                        g0=1;
+                        b0=1;
+                        r = 0;
+                        g = 1;
+                        b = 1;
                         r1 = 0;
                         g1 = 1;
                         b1 = 1;
@@ -6588,77 +6832,103 @@ void push_special_keys (key,  x,  y){
                         r3 = 0;
                         g3 = 1;
                         b3 = 1;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
-                    } else if (coord == 385) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 1;
-                        g1 = 0;
-                        b1 = 0;
-                        r2 = 0;
-                        g2 = 1;
-                        b2 = 1;
-                        r3 = 0;
-                        g3 = 1;
-                        b3 = 1;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
-                    } else if (coord == 335) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 0;
-                        g1 = 1;
-                        b1 = 1;
-                        r2 = 1;
-                        g2 = 0;
-                        b2 = 0;
-                        r3 = 0;
-                        g3 = 1;
-                        b3 = 1;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
-                    } else if (coord == 285) {
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        r1 = 0;
-                        g1 = 1;
-                        b1 = 1;
-                        r2 = 0;
-                        g2 = 1;
-                        b2 = 1;
-                        r3 = 1;
-                        g3 = 0;
-                        b3 = 0;
-                        r4 = 0;
-                        g4 = 1;
-                        b4 = 1;
+                        r4 = 1;
+                        g4 = 0;
+                        b4 = 0;
                     }
 
-                } else {
-                    coord -= 200;
-                    r = 0;
-                    g = 1;
-                    b = 1;
-                    r1 = 0;
-                    g1 = 1;
-                    b1 = 1;
-                    r2 = 0;
-                    g2 = 1;
-                    b2 = 1;
-                    r3 = 0;
-                    g3 = 1;
-                    b3 = 1;
-                    r4 = 1;
-                    g4 = 0;
-                    b4 = 0;
                 }
+
+                else if(!isSaveGame){
+                    if (coord < 435) {
+                        coord += 50;
+                         if (coord == 435) {
+                            r = 1;
+                            g = 0;
+                            b = 0;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        } else if (coord == 385) {
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 1;
+                            g1 = 0;
+                            b1 = 0;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        } else if (coord == 335) {
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 1;
+                            g2 = 0;
+                            b2 = 0;
+                            r3 = 0;
+                            g3 = 1;
+                            b3 = 1;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        } else if (coord == 285) {
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            r1 = 0;
+                            g1 = 1;
+                            b1 = 1;
+                            r2 = 0;
+                            g2 = 1;
+                            b2 = 1;
+                            r3 = 1;
+                            g3 = 0;
+                            b3 = 0;
+                            r4 = 0;
+                            g4 = 1;
+                            b4 = 1;
+                        }
+
+                    } else {
+                        coord -= 200;
+                        r = 0;
+                        g = 1;
+                        b = 1;
+                        r1 = 0;
+                        g1 = 1;
+                        b1 = 1;
+                        r2 = 0;
+                        g2 = 1;
+                        b2 = 1;
+                        r3 = 0;
+                        g3 = 1;
+                        b3 = 1;
+                        r4 = 1;
+                        g4 = 0;
+                        b4 = 0;
+                    }
+                }
+
+
             }
 
         }
@@ -6832,7 +7102,18 @@ void push_special_keys (key,  x,  y){
 void push_keyboard(key,x,y){
 
     if (key == 13) {
-        if (coord==435) {
+        if (coord==485){
+            global_menu.game_on=1;
+            global_x=0;
+            global_y=0;
+            cur_y=800;
+            cur_x=0;
+            ///TODO прочекать загрузку поля(отрисовывает правильно)
+            thisGame=loadSavedGame(ratingTable);
+            glutDisplayFunc(draw_game_field);
+            glutPostRedisplay();
+        }
+        else if (coord==435) {
             global_menu.enter_name=1;
             if(global_menu.enter_name) {
                 if(!global_menu.start_game && !global_menu.game_on) {
@@ -7042,6 +7323,11 @@ void push_keyboard(key,x,y){
             safeGame(thisGame);
             ratingTable=updateRateTable(ratingTable, getFirstPlayer(thisGame), delta);
             safeTable(ratingTable);
+            if(file==NULL){
+                FILE* file=fopen("saveGAME.txt", "wb+");
+                fputc('1', file);
+            }
+            isSaveGame=1;
             end(thisGame);
             glutDestroyWindow(1);
         }
@@ -7067,6 +7353,12 @@ int main(int argc, char * argv[]) {
     }
     if(!ratingTable) {
         ratingTable = loadRateTable();
+    }
+    file=fopen("saveGAME.txt", "rb");
+    if(file){
+        isSaveGame=1;
+        help_for_game=1;
+
     }
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
