@@ -37,9 +37,9 @@ Attack* newAttack() {
     new->next = NULL;
     return new;
 }
-int countAttackWeight(Attack* attack, int winLineLength, int isYourFigure) {
+int countAttackWeight(Attack* attack, int winLineLength, int complexity) {
     if(attack->power == winLineLength) return (attack->power * 1000) / attack->divider;
-    if(attack->power  == winLineLength - 1 && attack->potential == 2) return (attack->power  * 200) / attack->divider;
+    if(attack->power  == winLineLength - 1 && attack->potential == 2) return (attack->power  * ((complexity > MEDIUM)?200:10)) / attack->divider;
     return (attack->power  + attack->potential * 2) / attack->divider;
 }
 AttackCollector* newAttackCollector(int winLineLength) {
@@ -130,11 +130,11 @@ void turnAround(AttackCollector* collector) {
     collector->curAttack->next = NULL;
 }
 
-Attack* collectAttacksOnLine(gameField* field,
+Attack* collectAttacksOnLine(gameField* field, int complexity,
                           int curX, int curY, int figure, int dX, int dY,  int winLineLength) {
     AttackCollector* collector = newAttackCollector(winLineLength);
     getAttacks(collector, field, curX, curY, figure, dX, dY);
-    return filteredAttacks(collector, winLineLength);
+    return (complexity > HARD)?filteredAttacks(collector, winLineLength):collector->attacks;
 }
 Attack* filteredAttacks(AttackCollector* collector, int winLineLength) {
     AttackCollector* costyl = newAttackCollector(1);
@@ -155,19 +155,19 @@ Attack* filteredAttacks(AttackCollector* collector, int winLineLength) {
 
     return costyl->attacks;
 }
-AttackCollection* getAllAttacks(gameField* field, int xCord, int yCord, int winLineLength) {
+AttackCollection* getAllAttacks(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
     if(getValueByCords(field, xCord, yCord)) return NULL;
     AttackCollection* result = newCollection();
 
-    result->attacksCross[0] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, 0, winLineLength);
-    result->attacksCross[1] = collectAttacksOnLine(field, xCord, yCord, CROSS, 0, 1, winLineLength);
-    result->attacksCross[2] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, -1, winLineLength);
-    result->attacksCross[3] = collectAttacksOnLine(field, xCord, yCord, CROSS, 1, 1, winLineLength);
+    result->attacksCross[0] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 1, 0, winLineLength);
+    result->attacksCross[1] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 0, 1, winLineLength);
+    result->attacksCross[2] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 1, -1, winLineLength);
+    result->attacksCross[3] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 1, 1, winLineLength);
 
-    result->attacksZero[0] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, 0, winLineLength);
-    result->attacksZero[1] = collectAttacksOnLine(field, xCord, yCord, ZERO, 0, 1, winLineLength);
-    result->attacksZero[2] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, -1, winLineLength);
-    result->attacksZero[3] = collectAttacksOnLine(field, xCord, yCord, ZERO, 1, 1, winLineLength);
+    result->attacksZero[0] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 1, 0, winLineLength);
+    result->attacksZero[1] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 0, 1, winLineLength);
+    result->attacksZero[2] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 1, -1, winLineLength);
+    result->attacksZero[3] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 1, 1, winLineLength);
 
     return result;
 }
@@ -197,31 +197,34 @@ int isBreakPoint(Attack* attacks, int winLineLength) {
     }
     return 0;
 }
-int countWeight(gameField* field, int yourFigure, int xCord, int yCord, int winLineLength) {
-    AttackCollection* attackCollection = getAllAttacks(field, xCord, yCord, winLineLength);
+int countWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
+    AttackCollection* attackCollection = getAllAttacks(field, complexity, xCord, yCord, winLineLength);
     if(!attackCollection) return 0;
     int weight = 0;
 
-    weight += count(attackCollection->attacksZero, ZERO, winLineLength, yourFigure == ZERO);
-    weight += count(attackCollection->attacksCross, CROSS, winLineLength, yourFigure == CROSS);
-
+    weight += count(attackCollection->attacksZero, ZERO, winLineLength, complexity);
+    if(complexity > EASY) {
+        weight += count(attackCollection->attacksCross, CROSS, winLineLength, complexity);
+    }
     return weight;
 }
 
-int count(Attack** attacks, int figure, int winLineLength, int isYourFigure) {
+int count(Attack** attacks, int figure, int winLineLength, int complexity) {
     int weight = 0, breakPoints = 0;
 
     for(int i = 0; i < 4; i++) {
-        if(isBreakPoint(attacks[i], winLineLength)) {
-            if(++breakPoints == 2) {
-                weight += 100;
-                return weight;
+        if(complexity > MEDIUM) {
+            if (isBreakPoint(attacks[i], winLineLength)) {
+                if (++breakPoints == 2) {
+                    weight += 100;
+                    return weight;
+                }
             }
         }
         for(Attack* attack= attacks[i]; attack;) {
             if(attack->power > winLineLength) attack->power = winLineLength;
             if(attack->power == winLineLength && figure == ZERO) weight += 100;
-            weight += countAttackWeight(attack, winLineLength, isYourFigure);
+            weight += countAttackWeight(attack, winLineLength, complexity);
             attack = attack->next;
         }
     }
@@ -236,12 +239,12 @@ Attack* getAttack(Attack* start, int index) {
     return NULL;
 }
 
-void godCreation(gameField* field, int winLineLength, int yourFigure, int* resX, int* resY) {
+void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY) {
     int maxWeight = 0, curWeight, resultX = 0, resultY = 0;
 
     for(int i = 0; i < field->size; i++) {
         for (int j = 0; j < field->size; j++) {
-            curWeight = countWeight(field,yourFigure, j, i, winLineLength);
+            curWeight = countWeight(field, complexity, j, i, winLineLength);
             if(curWeight > maxWeight) {
                 maxWeight = curWeight;
                 resultX = j; resultY = i;
@@ -249,5 +252,14 @@ void godCreation(gameField* field, int winLineLength, int yourFigure, int* resX,
         }
     }
     *resX = resultX; *resY = resultY;
+    if(maxWeight == 0) {
+        for(int i = 0; i < field->size; i++) {
+            for (int j = 0; j < field->size; j++) {
+                if(!getValueByCords(field, j, i)) {
+                    resultX = j; resultY = i;
+                }
+            }
+        }
+    }
     writeValue(field, resultX, resultY, ZERO);
 }

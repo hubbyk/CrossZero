@@ -9,7 +9,7 @@ gameSettings* loadDefaultSettings() {
     gameSettings *settings = newSettings(); //создаем новую структуру настроек
 
     //задаем настройки по умолчанию
-    setComplexity(settings, MEDIUM);
+    setComplexity(settings, EASY);
     setWinLineLength(settings, 3);
     setFieldSize(settings, 3);
 

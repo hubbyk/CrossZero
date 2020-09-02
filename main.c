@@ -123,6 +123,7 @@ void rules (float x, float y)
 }
 
 void print_rules() {
+    //TODO не нажимать TAB во время игры
     glClearColor(0.1,0.1,0.1,0.0f);
     glLineWidth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -6679,6 +6680,7 @@ void push_special_keys (key,  x,  y){
                 }
                 else if(flag_settings.first_move == BOT){
                     flag_settings.first_move=GAMER;
+                    setFirstMove(settings, GAMER);
                     edge=327;
                     Sedge=327;
                     glutPostRedisplay();
@@ -6851,7 +6853,7 @@ void push_keyboard(key,x,y){
                         }
                         int costylX = 0, costylY = 0;
                         if(getFirstMove(getSettings(thisGame)) == BOT) {
-                            godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), ZERO, &costylX, &costylY);
+                            godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &costylX, &costylY);
                             setFirstMove(getSettings(thisGame), GAMER);
                         }
 
@@ -6922,6 +6924,7 @@ void push_keyboard(key,x,y){
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
+                        delta = 5;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
                         return;
@@ -6934,10 +6937,11 @@ void push_keyboard(key,x,y){
                         return;
                     }
                     setFirstMove(getSettings(thisGame), BOT);
-                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), ZERO, &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
+                        delta = 5;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
                         return;
@@ -6951,10 +6955,11 @@ void push_keyboard(key,x,y){
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                 }else {
-                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), ZERO, &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &botX, &botY);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
+                        delta = 5;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
                         return;
@@ -6969,6 +6974,7 @@ void push_keyboard(key,x,y){
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
+                        delta = 5;
                         glutDisplayFunc(game_result);
                         glutPostRedisplay();
                         return;
@@ -7023,8 +7029,9 @@ void push_keyboard(key,x,y){
         }
     }
     else if(key==9){
-        glutDisplayFunc(print_rules);
+        if(!global_menu.game_on) glutDisplayFunc(print_rules);
         glutPostRedisplay();
+
     }
 
     else if (key=='q'){
@@ -7053,8 +7060,12 @@ void default_gue_settings(){
 }
 
 int main(int argc, char * argv[]) {
-    settings = loadDefaultSettings();
-    ratingTable = loadRateTable();
+    if(!settings) {
+        settings = loadDefaultSettings();
+    }
+    if(!ratingTable) {
+        ratingTable = loadRateTable();
+    }
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
     glutInitWindowSize(800, 800);
