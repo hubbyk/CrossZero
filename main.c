@@ -79,6 +79,8 @@ void reshape (int w, int h)
 void control_information (float x, float y)
 {
     char control[100]="Press TAB to open control information\0";
+    char press_f[100]="Press F to pay respect\0";
+
     int j = strlen(control);
     glColor3f(1, 1, 1);
     glRasterPos2f(x, y);
@@ -86,6 +88,14 @@ void control_information (float x, float y)
     {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, control[i]);
     }
+    y-=50;
+    j=strlen(press_f);
+    glRasterPos2f(x, y);
+    for (int i = 0; i < j; i++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, press_f[i]);
+    }
+
 }
 
 void print_control_information() {
@@ -7099,6 +7109,30 @@ void push_special_keys (key,  x,  y){
 
 }
 
+void pressF (){
+    glClearColor(0.1,0.1,0.1,0.0f);
+    glLineWidth(1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1,1,0);
+    glBegin(GL_QUADS);
+    glVertex2f(200,100);
+    glVertex2f(270,100);
+    glVertex2f(270,700);
+    glVertex2f(200,700);
+    glVertex2f(200,700);
+    glVertex2f(630,700);
+    glVertex2f(630,630);
+    glVertex2f(200,630);
+    glVertex2f(200,470);
+    glVertex2f(500,470);
+    glVertex2f(500,400);
+    glVertex2f(200,400);
+
+
+    glEnd();
+    glutSwapBuffers();
+}
+
 void push_keyboard(key,x,y){
 
     if (key == 13) {
@@ -7320,7 +7354,11 @@ void push_keyboard(key,x,y){
     else if(key==9){
         if(!global_menu.game_on) glutDisplayFunc(print_rules);
         glutPostRedisplay();
+    }
 
+    else if(key==102){
+        if(!global_menu.game_on) glutDisplayFunc(pressF);
+        glutPostRedisplay();
     }
 
     else if (key=='q'){
