@@ -7127,8 +7127,6 @@ void pressF (){
     glVertex2f(500,470);
     glVertex2f(500,400);
     glVertex2f(200,400);
-
-
     glEnd();
     glutSwapBuffers();
 }

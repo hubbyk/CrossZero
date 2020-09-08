@@ -51,6 +51,7 @@ AttackCollection* getAllAttacks(gameField* field, int complexity, int xCord, int
 AttackCollection* newCollection();
 
 int isBreakPoint(Attack* attack, int winLineLength);
+void freeCollection(AttackCollection* collection);
 
 //int getWeight(gameField* field, int xCord, int yCord);
 int countWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength);

@@ -132,9 +132,12 @@ void turnAround(AttackCollector* collector) {
 
 Attack* collectAttacksOnLine(gameField* field, int complexity,
                           int curX, int curY, int figure, int dX, int dY,  int winLineLength) {
+    Attack* result = NULL;
     AttackCollector* collector = newAttackCollector(winLineLength);
     getAttacks(collector, field, curX, curY, figure, dX, dY);
-    return (complexity > HARD)?filteredAttacks(collector, winLineLength):collector->attacks;
+    result = (complexity > HARD)?filteredAttacks(collector, winLineLength):collector->attacks;
+    free(collector);
+    return result;
 }
 Attack* filteredAttacks(AttackCollector* collector, int winLineLength) {
     AttackCollector* costyl = newAttackCollector(1);
@@ -151,7 +154,6 @@ Attack* filteredAttacks(AttackCollector* collector, int winLineLength) {
             attack = attack->next;
         }
     }
-    free(collector);
 
     return costyl->attacks;
 }
@@ -206,6 +208,8 @@ int countWeight(gameField* field, int complexity, int xCord, int yCord, int winL
     if(complexity > EASY) {
         weight += count(attackCollection->attacksCross, CROSS, winLineLength, complexity);
     }
+
+    freeCollection(attackCollection);
     return weight;
 }
 
@@ -262,4 +266,24 @@ void godCreation(gameField* field, int winLineLength, int complexity, int* resX,
         }
     }
     writeValue(field, resultX, resultY, ZERO);
+}
+void freeCollection(AttackCollection* collection) {
+    Attack* toRemove;
+    Attack* curAttack;
+    for (int i = 0; i < 4; ++i) {
+        curAttack = collection->attacksCross[i];
+        for(curAttack; curAttack; ) {
+            toRemove = curAttack;
+            curAttack = curAttack->next;
+            free(toRemove);
+        }
+    }
+    for (int i = 0; i < 4; ++i) {
+        curAttack = collection->attacksZero[i];
+        for(curAttack; curAttack; ) {
+            toRemove = curAttack;
+            curAttack = curAttack->next;
+            free(toRemove);
+        }
+    }
 }
