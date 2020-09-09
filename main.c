@@ -4,6 +4,7 @@
 #else
 #include <GLUT/GLUT.h>  /*Для Mac OS*/
 #endif
+#include <time.h>
 
 GAME *thisGame = NULL;
 int delta=0;
@@ -7173,7 +7174,7 @@ void push_keyboard(key,x,y){
                         }
                         int costylX = 0, costylY = 0;
                         if(getFirstMove(getSettings(thisGame)) == BOT) {
-                            godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &costylX, &costylY);
+                            godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &costylX, &costylY, ZERO);
                             setFirstMove(getSettings(thisGame), GAMER);
                         }
 
@@ -7237,6 +7238,39 @@ void push_keyboard(key,x,y){
     else if(key==32){
         if(global_menu.game_on){
             znak = getValueByCords(getBattlefield(thisGame), global_x, global_y);
+            //TODO не забудь про открытие файла и time_t start = time(NULL);
+//            FILE* timer = fopen("timer.txt", "w");
+//            time_t start = time(NULL);
+//            int bufX = 0, bufY = 0;
+////            if(getFirstMove(getSettings(thisGame)) == GAMER) {
+//                godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &bufX, &bufY, CROSS);
+//                ++isRaw;
+//                if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+//                    time_t end = time(NULL);
+//                    fprintf(timer, "%f", difftime(end, start));
+//                    return;
+//                }
+//                if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
+//                    time_t end = time(NULL);
+//                    fprintf(timer, "%f", difftime(end, start));
+//                    return;
+//                }
+//                setFirstMove(getSettings(thisGame), BOT);
+//            }else {
+//                godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &bufX, &bufY, ZERO);
+//                ++isRaw;
+//                if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+//                    time_t end = time(NULL);
+//                    fprintf(timer, "%f", difftime(end, start));
+//                    return;
+//                }
+//                if(checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
+//                    time_t end = time(NULL);
+//                    fprintf(timer, "%f", difftime(end, start));
+//                    return;
+//                }
+//                setFirstMove(getSettings(thisGame), BOT);
+//            }
 
             if(!znak) {
                 int botX = 0, botY = 0;
@@ -7258,7 +7292,7 @@ void push_keyboard(key,x,y){
                         return;
                     }
                     setFirstMove(getSettings(thisGame), BOT);
-                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &botX, &botY, ZERO);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;
@@ -7276,7 +7310,7 @@ void push_keyboard(key,x,y){
                     }
                     setFirstMove(getSettings(thisGame), GAMER);
                 }else {
-                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &botX, &botY);
+                    godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)), getComplexity(getSettings(thisGame)), &botX, &botY, ZERO);
                     ++isRaw;
                     if(isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                         gameResult = RAW;

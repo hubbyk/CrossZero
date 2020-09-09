@@ -243,7 +243,7 @@ Attack* getAttack(Attack* start, int index) {
     return NULL;
 }
 
-void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY) {
+void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY, int figure) {
     int maxWeight = 0, curWeight, resultX = 0, resultY = 0;
 
     for(int i = 0; i < field->size; i++) {
@@ -265,7 +265,7 @@ void godCreation(gameField* field, int winLineLength, int complexity, int* resX,
             }
         }
     }
-    writeValue(field, resultX, resultY, ZERO);
+    writeValue(field, resultX, resultY, figure);
 }
 void freeCollection(AttackCollection* collection) {
     Attack* toRemove;

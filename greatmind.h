@@ -57,5 +57,5 @@ void freeCollection(AttackCollection* collection);
 int countWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength);
 int count(Attack** attacks, int figure, int winLineLength, int complexity);
 
-void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY);
+void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY, int figure);
 #endif //CROSSZERO_GREATMIND_H
