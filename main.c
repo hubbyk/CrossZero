@@ -7107,6 +7107,55 @@ void push_special_keys (key,  x,  y){
             glutPostRedisplay();
         }
     }
+    else if (key==GLUT_KEY_F4){
+        FILE* timer = fopen("timer.txt", "w");
+        float start = clock();
+        int bufX = 0, bufY = 0;
+        thisGame = createNewGame(settings, ratingTable);
+        isRaw = 0;
+        while (1) {
+            if (getFirstMove(getSettings(thisGame)) == GAMER) {
+                godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)),
+                            getComplexity(getSettings(thisGame)), &bufX, &bufY, CROSS);
+                global_x = bufX;
+                global_y = bufY;
+                ++isRaw;
+                if (isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                    float end = clock();
+                    fprintf(timer, "%f", (end - start)/CLOCKS_PER_SEC);
+                    break;
+                }
+                if (checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
+                    float end = clock();
+                    fprintf(timer, "%f", (end - start)/CLOCKS_PER_SEC);
+                    break;
+                }
+                setFirstMove(getSettings(thisGame), BOT);
+
+            } else {
+                godCreation(getBattlefield(thisGame), getWinLineLength(getSettings(thisGame)),
+                            getComplexity(getSettings(thisGame)), &bufX, &bufY, ZERO);
+                global_x = bufX;
+                global_y = bufY;
+                ++isRaw;
+                if (isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
+                    float end = clock();
+                    fprintf(timer, "%f", (end - start)/CLOCKS_PER_SEC);
+                    break;
+                }
+                if (checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
+                    float end = clock();
+                    fprintf(timer, "%f", (end - start)/CLOCKS_PER_SEC);
+                    break;
+                }
+                setFirstMove(getSettings(thisGame), GAMER);
+            }
+
+        }
+        glutDisplayFunc(draw_game_field);
+        glutPostRedisplay();
+
+    }
 
 }
 
