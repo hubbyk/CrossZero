@@ -22,7 +22,7 @@ gameField* newGameField(int size) {
 //    field->gameMap = newMap;
 //}
 
-void putValue(gameField* field, int xCord, int yCord, int value) {
+void writeValue(gameField* field, int xCord, int yCord, int value) {
 //    ++field->gameMap->count;
 //    //count position to insert
 //

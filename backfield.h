@@ -31,7 +31,7 @@ gameField* newGameField(int size); //выделяет память под нов
 
 //void setNewMap(gameField* field, int sizeOfMap);
 
-void putValue(gameField* field, int xCord, int yCord, int value); // записывает новое значение в карту
+void writeValue(gameField* field, int xCord, int yCord, int value); // записывает новое значение в карту
 
 //void addValue(gameField* field, int value, int index);
 //void addXCord(gameField* field, int xCord, int index);
