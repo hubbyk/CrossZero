@@ -8,7 +8,8 @@
 GAME* loadSavedGame(tableLine* table) {
     FILE* gameFile = fopen("saved_game.txt", "r");
     GAME* loadedGame = newGame();
-    gameField* field = newGameField();
+    //gameField* field = newGameField();
+    gameField* field = NULL;
     gameSettings* settings = newSettings();
     int complexity, fieldSize, winLineLength, countOfNonVoidCell, firstMove;
     char playerName[15];
@@ -24,22 +25,26 @@ GAME* loadSavedGame(tableLine* table) {
     setFirstPlayer(loadedGame, getPlayerByName(table, playerName));
     if(!getFirstPlayer(loadedGame)) setFirstPlayer(loadedGame, newPlayer(playerName, 0, HUMAN));
     setSecondPlayer(loadedGame, getPlayerByComplexity(getComplexity(settings)));
+//
+//    setNewMap(field, countOfNonVoidCell);
+//
+//    for(int i = 0; i < countOfNonVoidCell; i++) {
+//        addValue(field, fgetc(gameFile) - 48, i);
+//    }
+//    fgetc(gameFile);
+//    for(int i = 0; i < countOfNonVoidCell; i++) {
+//        addXCord(field, fgetc(gameFile) - 48, i);
+//    }
+//    fgetc(gameFile);
+//    for(int i = 0; i < countOfNonVoidCell; i++) {
+//        addYCord(field, fgetc(gameFile) - 48, i);
+//    }
+//
+    field = newGameField(getFieldSize(settings));
 
-    setNewMap(field, countOfNonVoidCell);
-
-    for(int i = 0; i < countOfNonVoidCell; i++) {
-        addValue(field, fgetc(gameFile) - 48, i);
+    for(int i = 0; i < fieldSize; i++) {
+        fscanf(gameFile, "%d %d\n", &field->lines[i].bitMapState, &field->lines[i].bitMapValue);
     }
-    fgetc(gameFile);
-    for(int i = 0; i < countOfNonVoidCell; i++) {
-        addXCord(field, fgetc(gameFile) - 48, i);
-    }
-    fgetc(gameFile);
-    for(int i = 0; i < countOfNonVoidCell; i++) {
-        addYCord(field, fgetc(gameFile) - 48, i);
-    }
-
-    field->size = getFieldSize(settings);
 
     fclose(gameFile);
 
@@ -50,12 +55,11 @@ GAME* loadSavedGame(tableLine* table) {
 }
 GAME* createNewGame(gameSettings* settings, tableLine* line) {
     GAME* game = newGame();
-    gameField* field = newGameField();
+    gameField* field = newGameField(settings->fieldSize);
     setSettings(game, settings);
     setFirstPlayer(game, newPlayer(settings->playerName, getRatingByName(line, settings->playerName), HUMAN));
-    setNewMap(field, 0);
+    //setNewMap(field, 0);
     setBattlefield(game, field);
-    field->size = settings->fieldSize;
     setSecondPlayer(game, getPlayerByComplexity(getComplexity(settings)));
 
     return game;
@@ -71,6 +75,7 @@ GAME* newGame() {
 
 void safeGame(GAME* thisGame) {
     FILE *gameFile = fopen("saved_game.txt", "w");
+    gameField* field = getBattlefield(thisGame);
 
     // записываем настройки игры
     fprintf(gameFile, "%d %d %d %d\n",
@@ -78,28 +83,20 @@ void safeGame(GAME* thisGame) {
             getWinLineLength(getSettings(thisGame)), getFirstMove(getSettings(thisGame)));
 
     // записываем имена игроков
-    fprintf(gameFile, "%s\n%d\n", getName(getFirstPlayer(thisGame)), getCountOfNonVoidCells(getBattlefield(thisGame)));
+    fprintf(gameFile, "%s\n", getName(getFirstPlayer(thisGame))); //getCountOfNonVoidCells(getBattlefield(thisGame)));
 
     // записываем состояние поля, значения, коордната Х, координата У
-    for(int i = 0; i < getCountOfNonVoidCells(getBattlefield(thisGame)); i++) {
-        fprintf(gameFile, "%d",getValues(getBattlefield(thisGame))[i]);
+    for(int i = 0; i < getFieldSize(getSettings(thisGame)); i++) {
+        fprintf(gameFile, "%d %d\n", field->lines[i].bitMapState, field->lines[i].bitMapValue);
     }
-    fprintf(gameFile, "\n");
-    for(int i = 0; i < getCountOfNonVoidCells(getBattlefield(thisGame)); i++) {
-        fprintf(gameFile, "%d", getXCords(getBattlefield(thisGame))[i]);
-    }
-    fprintf(gameFile, "\n");
-    for(int i = 0; i < getCountOfNonVoidCells(getBattlefield(thisGame)); i++) {
-        fprintf(gameFile, "%d", getYCords(getBattlefield(thisGame))[i]);
-    }
-    fprintf(gameFile, "\n");
 
     fclose(gameFile);
 }
+
 void end(GAME* game) {
     free(getFirstPlayer(game));
     free(getSecondPlayer(game));
-    free(getBattlefield(game)->gameMap);
+    //free(getBattlefield(game)->gameMap);
     free(getBattlefield(game));
     free(getSettings(game));
     free(game);
