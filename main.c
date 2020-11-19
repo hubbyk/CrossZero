@@ -7122,7 +7122,7 @@ void push_special_keys (key,  x,  y){
                 ++isRaw;
                 if (isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                     float end = clock();
-                    fprintf(timer, "%f", (end - start)/CLOCKS_PER_SEC);
+                    fprintf(timer, "%f\n RAW\n", (end - start)/CLOCKS_PER_SEC);
                     break;
                 }
                 if (checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
@@ -7140,7 +7140,7 @@ void push_special_keys (key,  x,  y){
                 ++isRaw;
                 if (isRaw == getFieldSize(getSettings(thisGame)) * getFieldSize(getSettings(thisGame))) {
                     float end = clock();
-                    fprintf(timer, "%f", (end - start)/CLOCKS_PER_SEC);
+                    fprintf(timer, "%f\n RAW\n", (end - start)/CLOCKS_PER_SEC);
                     break;
                 }
                 if (checkWin(getBattlefield(thisGame), global_x, global_y, getWinLineLength(getSettings(thisGame)))) {
