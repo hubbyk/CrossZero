@@ -79,21 +79,22 @@ void reshape (int w, int h)
 
 void control_information (float x, float y)
 {
-    char control[100]="Press TAB to open control information\0";
-    char press_f[100]="Press F to pay respect\0";
+    char control[38]="Press TAB to open control information\0";
+    char press_f[24]="Press F to pay respect\0";
 
-    int j = strlen(control);
     glColor3f(1, 1, 1);
     glRasterPos2f(x, y);
-    for (int i = 0; i < j; i++)
+    for (int i = 1; i < 38; i += 2)
     {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, control[i - 1]);
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, control[i]);
     }
     y-=50;
-    j=strlen(press_f);
+
     glRasterPos2f(x, y);
-    for (int i = 0; i < j; i++)
+    for (int i = 1; i < 24; i += 2)
     {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, press_f[i - 1]);
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, press_f[i]);
     }
 
@@ -119,18 +120,23 @@ void enter_your_name (float x, float y)
 
 void rules (float x, float y)
 {
-    char RULES[100]=" Press space to make a move\n"
+    char RULES[98]=" Press space to make a move\n"
                     "Press ESC to exit to the main menu\n"
                     "Press Alt+q to exit and save game\0";
-    int j = strlen(RULES);
+
     glColor3f(1, 0, 0);
     glRasterPos2f(x, y);
-    for (int i = 0; i < j; i++)
+    for (int i = 1; i < 98; i += 2)
     {
+        if(RULES[i - 1]=='\n'){
+            y-=50;
+            glRasterPos2f(x,y);
+        }
         if(RULES[i]=='\n'){
             y-=50;
             glRasterPos2f(x,y);
         }
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, RULES[i - 1]);
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, RULES[i]);
     }
 }
