@@ -77,38 +77,40 @@ void getAttacks(AttackCollector* collector, gameField* field,
 int checkCell(AttackCollector* collector, gameField* field, int x, int y) {
     int figure = getValueByCords(field, x, y);
 
-    if(!collector->firstPower) {
-        storeAttack(collector);
-    }
-    if(collector->complexity > EASY) {
-        if(isBreakPoint(collector))
-            collector->capacity += collector->curPower * 100;
-    }
-    if(collector->complexity > HARD) {
-        if(collector->curPower && collector->curPotential ||
-           collector->curPower >= collector->winLineLength) {
+
+    if(collector->figure != figure) {
+
+        if(!collector->firstPower) {
+            storeAttack(collector);
+        }
+        if(collector->complexity > EASY) {
+            if(isBreakPoint(collector))
+                collector->capacity += collector->curPower * 100;
+        }
+        if(collector->complexity > HARD) {
+            if(collector->curPower && collector->curPotential ||
+            collector->curPower >= collector->winLineLength) {
+                collector->capacity += countAttackWeight(collector);
+            }
+        }else {
             collector->capacity += countAttackWeight(collector);
         }
-    }else {
-        collector->capacity += countAttackWeight(collector);
-    }
 
-    if(figure == CROSS || figure == ZERO || figure == BORDER) {
-        if(collector->figure != figure) {
+        if(figure) {
             return figure;
         }else {
-            collector->curPower++;
+            if(collector->curPower) {
+                collector->curPotential++;
+
+                collector->curPower = 1;
+                collector->curDivider = 1;
+                collector->curPotential = 2;
+            }
+            collector->curDivider++;
             collector->attackPlace++;
         }
     }else {
-        if(collector->curPower) {
-            collector->curPotential++;
-
-            collector->curPower = 1;
-            collector->curDivider = 1;
-            collector->curPotential = 2;
-        }
-        collector->curDivider++;
+        collector->curPower++;
         collector->attackPlace++;
     }
 
