@@ -50,6 +50,7 @@ int countAttacksWeightOnLine(gameField* field, int complexity,
                                  int curX, int curY, int figure, int dX, int dY, int winLineLength);
 
 int getAllAttacksWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength);
+void handleCollector(AttackCollector* collector);
 
 void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY, int figure);
 #endif //CROSSZERO_GREATMIND_H
