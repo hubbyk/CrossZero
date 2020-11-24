@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 99)
 add_executable(CrossZero main.c backfield.c backfield.h game.c game.h frontfield.c frontfield.h player.c player.h menu.c menu.h settings.c settings.h ratetable.c ratetable.h mainheader.h greatmind.c greatmind.h gameheader.h)
 
 #add_compile_options(-march=native -O2 -fno-asynchronous-unwind-tables)
-#add_compile_options(-march=native -Os -fno-asynchronous-unwind-tables)
+add_compile_options(-march=native -Os -fno-asynchronous-unwind-tables)
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
