@@ -32,7 +32,7 @@ int checkLine(gameField* field, int lastX, int lastY, int dX, int dY) {
 int countAttackWeight(AttackCollector* collector) {
     if(collector->curPower == collector->winLineLength) return (collector->curPower * 1000) / collector->curDivider;
     if(collector->curPower  == collector->winLineLength - 1 && collector->curPotential == 2) return (collector->curPower  * ((collector->complexity > MEDIUM)?200:10)) / collector->curDivider;
-    return (collector->curPower  + collector->curPotential * 2) / collector->curDivider;
+    return (collector->curPower  + (collector->curPotential << 1)) / collector->curDivider;
 }
 AttackCollector* newAttackCollector(int winLineLength, int complexity) {
     AttackCollector* new = (AttackCollector*)malloc(sizeof(AttackCollector));
@@ -65,7 +65,7 @@ void getAttacks(AttackCollector* collector, gameField* field,
     for(int curX = cellX - dX, curY = cellY - dY;
         (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
                                                 (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
-        curX -= 2 * dX, curY -= 2 * dY) {
+        curX -= (dX << 1), curY -= (dY << 1)) {
         if (checkCell(collector, field, curX + dX, curY + dY)) break;
         if((curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
                                            (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength) {
@@ -78,7 +78,7 @@ void getAttacks(AttackCollector* collector, gameField* field,
     for(int curX = cellX + dX, curY = cellY + dY;
         (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
                                         (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
-        curX += 2 * dX, curY += 2 * dY) {
+        curX += (dX << 1), curY += (dY << 1)) {
         if(checkCell(collector, field, curX - dX, curY - dY)) break;
         if((curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
                                            (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength) {
