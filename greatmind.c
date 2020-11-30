@@ -16,7 +16,7 @@ int checkWin(gameField* field, int lastX, int lastY, int winLineLength) {
 }
 int checkLine(gameField* field, int lastX, int lastY, int dX, int dY) {
     int score = 0, xCopy = lastX, yCopy = lastY,
-        figure = getValueByCords(field, lastX, lastY);
+            figure = getValueByCords(field, lastX, lastY);
 
     while(figure == getValueByCords(field, xCopy, yCopy)) {
         ++score; xCopy += dX; yCopy += dY;
@@ -29,42 +29,38 @@ int checkLine(gameField* field, int lastX, int lastY, int dX, int dY) {
     return score;
 }
 
-int countAttackWeight(AttackCollector* collector) {
-    if(collector->curPower == collector->winLineLength) return (collector->curPower * 1000) / collector->curDivider;
-    if(collector->curPower  == collector->winLineLength - 1 && collector->curPotential == 2) return (collector->curPower  * ((collector->complexity > MEDIUM)?200:10)) / collector->curDivider;
-    return (collector->curPower  + collector->curPotential * 2) / collector->curDivider;
+Attack* newAttack() {
+    Attack* new = (Attack*)malloc(sizeof(Attack));
+    new->divider = 1;
+    new->power = 1;
+    new->potential = 0;
+    new->next = NULL;
+    return new;
 }
-AttackCollector* newAttackCollector(int winLineLength, int complexity) {
+int countAttackWeight(Attack* attack, int winLineLength, int complexity) {
+    if(attack->power == winLineLength) return (attack->power * 1000) / attack->divider;
+    if(attack->power  == winLineLength - 1 && attack->potential == 2) return (attack->power  * ((complexity > MEDIUM)?200:10)) / attack->divider;
+    return (attack->power  + attack->potential * 2) / attack->divider;
+}
+AttackCollector* newAttackCollector(int winLineLength) {
     AttackCollector* new = (AttackCollector*)malloc(sizeof(AttackCollector));
-
-    new->capacity = 0;
-
     new->figure = CROSS;
-    new->winLineLength = winLineLength;
-    new->complexity = complexity;
-
-    new->curDivider = 1;
-    new->curPower = 1;
-    new->curPotential = 0;
-
-    new->firstPotential = 0;
-    new->firstDivider = 0;
-    new->firstPower = 0;
-
+    new->attacks = NULL;
     new->distance = 1;
+    new->curAttack = newAttack();
     new->checkBorder = 0;
     new->attackPlace = 1;
-
+    new->winLineLength = winLineLength;
     return new;
 }
 
-void getAttacks(AttackCollector* collector, gameField* field,
-                    int cellX, int cellY, int figure, int dX, int dY) {
+Attack* getAttacks(AttackCollector* collector, gameField* field,
+                   int cellX, int cellY, int figure, int dX, int dY) {
     collector->figure = figure;
 
     for(int curX = cellX - dX, curY = cellY - dY;
         (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
-                                                (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
+                                        (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
         curX -= dX, curY -= dY) if(checkCell(collector, field, curX, curY)) break;
 
     turnAround(collector);
@@ -73,78 +69,31 @@ void getAttacks(AttackCollector* collector, gameField* field,
         (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
                                         (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
         curX += dX, curY += dY) if(checkCell(collector, field, curX, curY)) break;
+
+    return collector->attacks;
 }
 int checkCell(AttackCollector* collector, gameField* field, int x, int y) {
     int figure = getValueByCords(field, x, y);
 
     if(figure == CROSS || figure == ZERO) {
         if(collector->figure != figure) {
-
-            if(!collector->firstPower) {
-                storeAttack(collector);
-            }
-            if(collector->complexity > EASY) {
-                if(isBreakPoint(collector))
-                    collector->capacity += collector->curPower * 100;
-            }
-            if(collector->complexity > HARD) {
-                if(collector->curPower && collector->curPotential ||
-                    collector->curPower >= collector->winLineLength) {
-                    collector->capacity += countAttackWeight(collector);
-                }
-            }else {
-                collector->capacity += countAttackWeight(collector);
-            }
-
+            addAttack(collector);
             return figure;
         }else {
-            collector->curPower++;
+            collector->curAttack->power++;
             collector->attackPlace++;
         }
     }else if(figure == BORDER) {
-
-        if(!collector->firstPower) {
-            storeAttack(collector);
-        }
-        if(collector->complexity > EASY) {
-            if(isBreakPoint(collector))
-                collector->capacity += collector->curPower * 100;
-        }
-        if(collector->complexity > HARD) {
-            if(collector->curPower && collector->curPotential ||
-               collector->curPower >= collector->winLineLength) {
-                collector->capacity += countAttackWeight(collector);
-            }
-        }else {
-            collector->capacity += countAttackWeight(collector);
-        }
-
+        addAttack(collector);
         return figure;
     }else {
-        if(collector->curPower) {
-            collector->curPotential++;
-
-            if(!collector->firstPower) {
-                storeAttack(collector);
-            }
-            if(collector->complexity > EASY) {
-                if(isBreakPoint(collector))
-                    collector->capacity += collector->curPower * 100;
-            }
-            if(collector->complexity > HARD) {
-                if(collector->curPower && collector->curPotential ||
-                   collector->curPower >= collector->winLineLength) {
-                    collector->capacity += countAttackWeight(collector);
-                }
-            }else {
-                collector->capacity += countAttackWeight(collector);
-            }
-
-            collector->curPower = 1;
-            collector->curDivider = 1;
-            collector->curPotential = 2;
+        if(collector->curAttack->power) {
+            collector->curAttack->potential++;
+            addAttack(collector);
+            collector->curAttack = newAttack();
+            collector->curAttack->potential++;
         }
-        collector->curDivider++;
+        collector->curAttack->divider++;
         collector->attackPlace++;
     }
     if(collector->distance == collector->winLineLength - 1 && figure == collector->figure) {
@@ -152,87 +101,146 @@ int checkCell(AttackCollector* collector, gameField* field, int x, int y) {
     }else if(collector->distance == collector->winLineLength) {
         if(collector->checkBorder) {
             if(figure == collector->figure || figure == 0)
-                collector->curPotential++;
-
-            if(!collector->firstPower) {
-                storeAttack(collector);
-            }
-            if(collector->complexity > EASY) {
-                if(isBreakPoint(collector))
-                    collector->capacity += collector->curPower * 100;
-            }
-            if(collector->complexity > HARD) {
-                if(collector->curPower && collector->curPotential ||
-                   collector->curPower >= collector->winLineLength) {
-                    collector->capacity += countAttackWeight(collector);
-                }
-            }else {
-                collector->capacity += countAttackWeight(collector);
-            }
+                collector->curAttack->potential++;
+            addAttack(collector);
         }
         return 1;
     }
     collector->distance++;
     return 0;
 }
-
+void addAttack(AttackCollector* collector) {
+    Attack* cur = collector->attacks;
+    Attack* prevAttack;
+    if(!cur) {
+        collector->attacks = collector->curAttack;
+    } else {
+        while (cur) {
+            prevAttack = cur;
+            cur = cur->next;
+        }
+        prevAttack->next = collector->curAttack;
+    }
+}
 void turnAround(AttackCollector* collector) {
     collector->distance = 1;
     collector->checkBorder = 0;
-
-    collector->curPower = collector->firstPower;
-    collector->curPotential = collector->firstPotential;
-    collector->curDivider = collector->firstDivider;
+    collector->curAttack = collector->attacks;
+    collector->attacks = collector->attacks->next;
+    collector->curAttack->next = NULL;
 }
 
-void storeAttack(AttackCollector* collector) {
-    collector->firstPower = collector->curPower;
-    collector->firstDivider = collector->curDivider;
-    collector->firstPotential = collector->curPotential;
-}
-
-int countAttacksWeightOnLine(gameField* field, int complexity,
-                                 int curX, int curY, int figure, int dX, int dY, int winLineLength) {
-    int result;
-    AttackCollector* collector = newAttackCollector(winLineLength, complexity);
+Attack* collectAttacksOnLine(gameField* field, int complexity,
+                             int curX, int curY, int figure, int dX, int dY,  int winLineLength) {
+    Attack* result = NULL;
+    AttackCollector* collector = newAttackCollector(winLineLength);
     getAttacks(collector, field, curX, curY, figure, dX, dY);
-    //result = (complexity > HARD)?filteredAttacks(collector, winLineLength):collector->attacks;
-    result = collector->capacity;
+    result = (complexity > HARD)?filteredAttacks(collector, winLineLength):collector->attacks;
     free(collector);
     return result;
 }
-
-int getAllAttacksWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
-    if(getValueByCords(field, xCord, yCord)) return 0;
-    int result = 0;
-
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, 0, winLineLength);
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 0, 1, winLineLength);
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, -1, winLineLength);
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, 1, winLineLength);
-
-    if(complexity > EASY) {
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 1, 0, winLineLength);
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 0, 1, winLineLength);
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 1, -1, winLineLength);
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 1, 1, winLineLength);
+Attack* filteredAttacks(AttackCollector* collector, int winLineLength) {
+    AttackCollector* costyl = newAttackCollector(1);
+    if(collector->attackPlace >= winLineLength) {
+        for(Attack* attack = collector->attacks; attack;) {
+            if(attack->power && attack->potential ||
+               attack->power >= winLineLength) {
+                Attack* atkCopy = newAttack();
+                memcpy(atkCopy, attack, sizeof(Attack));
+                atkCopy->next = NULL;
+                costyl->curAttack = atkCopy;
+                addAttack(costyl);
+            }
+            attack = attack->next;
+        }
     }
+
+    return costyl->attacks;
+}
+AttackCollection* getAllAttacks(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
+    if(getValueByCords(field, xCord, yCord)) return NULL;
+    AttackCollection* result = newCollection();
+
+    result->attacksCross[0] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 1, 0, winLineLength);
+    result->attacksCross[1] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 0, 1, winLineLength);
+    result->attacksCross[2] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 1, -1, winLineLength);
+    result->attacksCross[3] = collectAttacksOnLine(field, complexity, xCord, yCord, CROSS, 1, 1, winLineLength);
+
+    result->attacksZero[0] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 1, 0, winLineLength);
+    result->attacksZero[1] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 0, 1, winLineLength);
+    result->attacksZero[2] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 1, -1, winLineLength);
+    result->attacksZero[3] = collectAttacksOnLine(field, complexity, xCord, yCord, ZERO, 1, 1, winLineLength);
 
     return result;
 }
+AttackCollection* newCollection() {
+    return (AttackCollection*)malloc(sizeof(AttackCollection));
+}
 
-int isBreakPoint(AttackCollector* collector) {
-    if(!collector) return 0;
+int isBreakPoint(Attack* attacks, int winLineLength) {
+    if(!attacks) return 0;
+    Attack* centAttack;
 
-    if(collector->curDivider == 1) {
-        if (collector->curPower >= collector->winLineLength - 1) return 1;
-        if (collector->curPower >= collector->winLineLength - 2 && collector->curPotential == 2) return 1;
+    for(Attack* attack = attacks; attack;) {
+        if(attack->divider == 1) centAttack = attack;
+        attack = attack->next;
     }
 
-    if(collector->curDivider == 2) {
-        if (collector->curPower >= collector->winLineLength - 2) return 1;
+    if(centAttack->power >= winLineLength - 1) return 1;
+    if(centAttack->power >= winLineLength - 2 && centAttack->potential ==  2) return 1;
+
+    for(Attack* attack = attacks; attack;) {
+        int score = centAttack->power;
+        if(attack->divider == 2) {
+            if(centAttack->potential == 2 && attack->potential == 2) ++score;
+            if(score + attack->power >= winLineLength - 1) return 1;
+        }
+        attack = attack->next;
     }
     return 0;
+}
+int countWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
+    AttackCollection* attackCollection = getAllAttacks(field, complexity, xCord, yCord, winLineLength);
+    if(!attackCollection) return 0;
+    int weight = 0;
+
+    weight += count(attackCollection->attacksZero, ZERO, winLineLength, complexity);
+    if(complexity > EASY) {
+        weight += count(attackCollection->attacksCross, CROSS, winLineLength, complexity);
+    }
+
+    freeCollection(attackCollection);
+    return weight;
+}
+
+int count(Attack** attacks, int figure, int winLineLength, int complexity) {
+    int weight = 0, breakPoints = 0;
+
+    for(int i = 0; i < 4; i++) {
+        if(complexity > MEDIUM) {
+            if (isBreakPoint(attacks[i], winLineLength)) {
+                if (++breakPoints == 2) {
+                    weight += 100;
+                    return weight;
+                }
+            }
+        }
+        for(Attack* attack= attacks[i]; attack;) {
+            if(attack->power > winLineLength) attack->power = winLineLength;
+            if(attack->power == winLineLength && figure == ZERO) weight += 100;
+            weight += countAttackWeight(attack, winLineLength, complexity);
+            attack = attack->next;
+        }
+    }
+
+    return weight;
+}
+
+Attack* getAttack(Attack* start, int index) {
+    for(int i = 0; i < index && start; i++, start = start->next) {
+        if(i == index) return start;
+    }
+    return NULL;
 }
 
 void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY, int figure) {
@@ -240,7 +248,7 @@ void godCreation(gameField* field, int winLineLength, int complexity, int* resX,
 
     for(int i = 0; i < field->size; i++) {
         for (int j = 0; j < field->size; j++) {
-            curWeight = getAllAttacksWeight(field, complexity, j, i, winLineLength);
+            curWeight = countWeight(field, complexity, j, i, winLineLength);
             if(curWeight > maxWeight) {
                 maxWeight = curWeight;
                 resultX = j; resultY = i;
@@ -258,4 +266,24 @@ void godCreation(gameField* field, int winLineLength, int complexity, int* resX,
         }
     }
     writeValue(field, resultX, resultY, figure);
+}
+void freeCollection(AttackCollection* collection) {
+    Attack* toRemove;
+    Attack* curAttack;
+    for (int i = 0; i < 4; ++i) {
+        curAttack = collection->attacksCross[i];
+        for(curAttack; curAttack; ) {
+            toRemove = curAttack;
+            curAttack = curAttack->next;
+            free(toRemove);
+        }
+    }
+    for (int i = 0; i < 4; ++i) {
+        curAttack = collection->attacksZero[i];
+        for(curAttack; curAttack; ) {
+            toRemove = curAttack;
+            curAttack = curAttack->next;
+            free(toRemove);
+        }
+    }
 }
