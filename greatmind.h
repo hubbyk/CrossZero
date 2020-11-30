@@ -8,48 +8,54 @@
 #ifndef CROSSZERO_GREATMIND_H
 #define CROSSZERO_GREATMIND_H
 
+typedef struct Attack{
+    int power;
+    int potential;
+    int divider;
+    struct Attack* next;
+}Attack;
+
 typedef struct {
-    int capacity;
-
     int winLineLength;
-    int complexity;
     int figure;
-
-    int curPower;
-    int curPotential;
-    int curDivider;
-
-    int firstPower;
-    int firstPotential;
-    int firstDivider;
-
     int checkBorder;
     int distance;
     int attackPlace;
-
+    Attack* attacks;
+    Attack* curAttack;
 }AttackCollector;
+
+typedef struct {
+    Attack* attacksCross[4];
+    Attack* attacksZero[4];
+}AttackCollection;
 
 int checkWin(gameField* field, int lastX, int lastY, int winLineLength);
 int checkLine(gameField* field, int lastX, int lastY, int dX, int dY);
 
-int countAttackWeigth(AttackCollector* collector);
+Attack* newAttack();
+int countAttackWeigth(Attack* attack, int winLineLength, int complexity);
 
-void storeAttack(AttackCollector* collector);
+AttackCollector* newAttackCollector(int winLineLength);
 
-int isBreakPoint(AttackCollector* collector);
-
-AttackCollector* newAttackCollector(int winLineLength, int complexity);
-
-void getAttacks(AttackCollector* collector, gameField* field,
-                    int curX, int curY, int figure, int dX, int dY);
-
+Attack* getAttacks(AttackCollector* collector, gameField* field,
+                   int curX, int curY, int figure, int dX, int dY);
+Attack* getAttack(Attack* start, int index);
 int checkCell(AttackCollector* collector, gameField* field, int x, int y);
-
+void addAttack(AttackCollector* collector);
 void turnAround(AttackCollector* collector);
-int countAttacksWeightOnLine(gameField* field, int complexity,
-                                 int curX, int curY, int figure, int dX, int dY, int winLineLength);
+Attack* collectAttacksOnLine(gameField* field, int complexity,
+                             int curX, int curY, int figure, int dX, int dY, int winLineLength);
+Attack* filteredAttacks(AttackCollector* collector, int winLineLength);
+AttackCollection* getAllAttacks(gameField* field, int complexity, int xCord, int yCord, int winLineLength);
+AttackCollection* newCollection();
 
-int getAllAttacksWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength);
+int isBreakPoint(Attack* attack, int winLineLength);
+void freeCollection(AttackCollection* collection);
+
+//int getWeight(gameField* field, int xCord, int yCord);
+int countWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength);
+int count(Attack** attacks, int figure, int winLineLength, int complexity);
 
 void godCreation(gameField* field, int winLineLength, int complexity, int* resX, int* resY, int figure);
 #endif //CROSSZERO_GREATMIND_H
