@@ -173,7 +173,45 @@ int countAttacksWeightOnLine(gameField* field, int complexity,
 
 int getAllAttacksWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
     if(getValueByCords(field, xCord, yCord)) return 0;
-    int result = 0;
+    int result = 0, doHorizon = 1, doVert = 1, doRightDiag = 1, doLeftDiag = 1,
+        horizonX = xCord - 1, horizonY = yCord,
+        vertX = xCord, vertY = yCord - 1,
+        rDiagX = xCord - 1, rDiagY = yCord + 1,
+        lDiagX = xCord - 1, lDiagY = yCord - 1;
+
+    AttackCollector* collector = newAttackCollector(winLineLength, complexity);
+
+    collector->figure = CROSS;
+
+    for(int i = 0; i <= collector->winLineLength; i++, ) {
+        if (doHorizon) {
+            if(checkCell(collector, field, horizonX, horizonY)) doHorizon = 0;
+        }
+        if (doVert) {
+            if(checkCell(collector, field, vertX, vertY)) doVert = 0;
+        }
+        if (doRightDiag) {
+            if(checkCell(collector, field, rDiagX, rDiagY)) doRightDiag = 0;
+        }
+        if (doLeftDiag) {
+            if(checkCell(collector, field, lDiagX, lDiagY)) doLeftDiag = 0;
+        }
+        if(!(doHorizon || doVert || doRightDiag || doLeftDiag)) break;
+    }
+
+    turnAround(collector);
+    doHorizon = 1, doVert = 1, doRightDiag = 1, doLeftDiag = 1;
+
+    for(int curX = xCord + 1, curY = yCord + 0;
+        (curX - xCord < 0)?xCord - curX:curX - xCord <= collector->winLineLength &&
+                                        (curY - yCord < 0)?yCord - curY:curY - yCord <= collector->winLineLength;
+        curX += (1 << 1), curY += (0 << 1)) {
+        if(checkCell(collector, field, curX - 1, curY - 0)) break;
+        if((curX - xCord < 0)?xCord - curX:curX - xCord <= collector->winLineLength &&
+                                           (curY - yCord < 0)?yCord - curY:curY - yCord <= collector->winLineLength) {
+            if(checkCell(collector, field, curX, curY)) break;
+        }
+    }
 
     result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, 0, winLineLength);
     result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 0, 1, winLineLength);
