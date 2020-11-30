@@ -179,51 +179,131 @@ int getAllAttacksWeight(gameField* field, int complexity, int xCord, int yCord, 
         rDiagX = xCord - 1, rDiagY = yCord + 1,
         lDiagX = xCord - 1, lDiagY = yCord - 1;
 
-    AttackCollector* collector = newAttackCollector(winLineLength, complexity);
+    AttackCollector* horizon_collector = newAttackCollector(winLineLength, complexity),
+        *vert_collecor = newAttackCollector(winLineLength, complexity),
+        *r_diag_collector = newAttackCollector(winLineLength, complexity),
+        *l_diag_collector = newAttackCollector(winLineLength, complexity);
 
-    collector->figure = CROSS;
+    horizon_collector->figure = CROSS;
+    vert_collecor->figure = CROSS;
+    r_diag_collector->figure = CROSS;
+    l_diag_collector->figure = CROSS;
 
-    for(int i = 0; i <= collector->winLineLength; i++, ) {
+    for(int i = 0; i <= horizon_collector->winLineLength; i++, horizonX -= 1, vertY -= 1, rDiagX -= 1, rDiagY += 1, lDiagX -= 1, lDiagY -= 1) {
         if (doHorizon) {
-            if(checkCell(collector, field, horizonX, horizonY)) doHorizon = 0;
+            if(checkCell(horizon_collector, field, horizonX, horizonY)) doHorizon = 0;
         }
         if (doVert) {
-            if(checkCell(collector, field, vertX, vertY)) doVert = 0;
+            if(checkCell(vert_collecor, field, vertX, vertY)) doVert = 0;
         }
         if (doRightDiag) {
-            if(checkCell(collector, field, rDiagX, rDiagY)) doRightDiag = 0;
+            if(checkCell(r_diag_collector, field, rDiagX, rDiagY)) doRightDiag = 0;
         }
         if (doLeftDiag) {
-            if(checkCell(collector, field, lDiagX, lDiagY)) doLeftDiag = 0;
+            if(checkCell(l_diag_collector, field, lDiagX, lDiagY)) doLeftDiag = 0;
         }
         if(!(doHorizon || doVert || doRightDiag || doLeftDiag)) break;
     }
 
-    turnAround(collector);
+    turnAround(horizon_collector);
+    turnAround(vert_collecor);
+    turnAround(r_diag_collector);
+    turnAround(l_diag_collector);
+
     doHorizon = 1, doVert = 1, doRightDiag = 1, doLeftDiag = 1;
+    horizonX = xCord + 1, horizonY = yCord,
+    vertX = xCord, vertY = yCord + 1,
+    rDiagX = xCord + 1, rDiagY = yCord - 1,
+    lDiagX = xCord + 1, lDiagY = yCord + 1;
 
-    for(int curX = xCord + 1, curY = yCord + 0;
-        (curX - xCord < 0)?xCord - curX:curX - xCord <= collector->winLineLength &&
-                                        (curY - yCord < 0)?yCord - curY:curY - yCord <= collector->winLineLength;
-        curX += (1 << 1), curY += (0 << 1)) {
-        if(checkCell(collector, field, curX - 1, curY - 0)) break;
-        if((curX - xCord < 0)?xCord - curX:curX - xCord <= collector->winLineLength &&
-                                           (curY - yCord < 0)?yCord - curY:curY - yCord <= collector->winLineLength) {
-            if(checkCell(collector, field, curX, curY)) break;
+    for(int i = 0; i <= horizon_collector->winLineLength; i++, horizonX += 1, vertY += 1, rDiagX += 1, rDiagY -= 1, lDiagX += 1, lDiagY += 1) {
+        if (doHorizon) {
+            if(checkCell(horizon_collector, field, horizonX, horizonY)) doHorizon = 0;
         }
+        if (doVert) {
+            if(checkCell(vert_collecor, field, vertX, vertY)) doVert = 0;
+        }
+        if (doRightDiag) {
+            if(checkCell(r_diag_collector, field, rDiagX, rDiagY)) doRightDiag = 0;
+        }
+        if (doLeftDiag) {
+            if(checkCell(l_diag_collector, field, lDiagX, lDiagY)) doLeftDiag = 0;
+        }
+        if(!(doHorizon || doVert || doRightDiag || doLeftDiag)) break;
     }
 
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, 0, winLineLength);
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 0, 1, winLineLength);
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, -1, winLineLength);
-    result += countAttacksWeightOnLine(field, complexity, xCord, yCord, CROSS, 1, 1, winLineLength);
+    result += horizon_collector->capacity;
+    result += vert_collecor->capacity;
+    result += r_diag_collector->capacity;
+    result += l_diag_collector->capacity;
 
-    if(complexity > EASY) {
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 1, 0, winLineLength);
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 0, 1, winLineLength);
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 1, -1, winLineLength);
-        result += countAttacksWeightOnLine(field, complexity, xCord, yCord, ZERO, 1, 1, winLineLength);
+    free(horizon_collector);
+    free(vert_collecor);
+    free(r_diag_collector);
+    free(l_diag_collector);
+
+    horizon_collector = newAttackCollector(winLineLength, complexity),
+    vert_collecor = newAttackCollector(winLineLength, complexity),
+    r_diag_collector = newAttackCollector(winLineLength, complexity),
+    l_diag_collector = newAttackCollector(winLineLength, complexity);
+
+    horizon_collector->figure = ZERO;
+    vert_collecor->figure = ZERO;
+    r_diag_collector->figure = ZERO;
+    l_diag_collector->figure = ZERO;
+
+    for(int i = 0; i <= horizon_collector->winLineLength; i++, horizonX -= 1, vertY -= 1, rDiagX -= 1, rDiagY += 1, lDiagX -= 1, lDiagY -= 1) {
+        if (doHorizon) {
+            if(checkCell(horizon_collector, field, horizonX, horizonY)) doHorizon = 0;
+        }
+        if (doVert) {
+            if(checkCell(vert_collecor, field, vertX, vertY)) doVert = 0;
+        }
+        if (doRightDiag) {
+            if(checkCell(r_diag_collector, field, rDiagX, rDiagY)) doRightDiag = 0;
+        }
+        if (doLeftDiag) {
+            if(checkCell(l_diag_collector, field, lDiagX, lDiagY)) doLeftDiag = 0;
+        }
+        if(!(doHorizon || doVert || doRightDiag || doLeftDiag)) break;
     }
+
+    turnAround(horizon_collector);
+    turnAround(vert_collecor);
+    turnAround(r_diag_collector);
+    turnAround(l_diag_collector);
+
+    doHorizon = 1, doVert = 1, doRightDiag = 1, doLeftDiag = 1;
+    horizonX = xCord + 1, horizonY = yCord,
+    vertX = xCord, vertY = yCord + 1,
+    rDiagX = xCord + 1, rDiagY = yCord - 1,
+    lDiagX = xCord + 1, lDiagY = yCord + 1;
+
+    for(int i = 0; i <= horizon_collector->winLineLength; i++, horizonX += 1, vertY += 1, rDiagX += 1, rDiagY -= 1, lDiagX += 1, lDiagY += 1) {
+        if (doHorizon) {
+            if(checkCell(horizon_collector, field, horizonX, horizonY)) doHorizon = 0;
+        }
+        if (doVert) {
+            if(checkCell(vert_collecor, field, vertX, vertY)) doVert = 0;
+        }
+        if (doRightDiag) {
+            if(checkCell(r_diag_collector, field, rDiagX, rDiagY)) doRightDiag = 0;
+        }
+        if (doLeftDiag) {
+            if(checkCell(l_diag_collector, field, lDiagX, lDiagY)) doLeftDiag = 0;
+        }
+        if(!(doHorizon || doVert || doRightDiag || doLeftDiag)) break;
+    }
+
+    result += horizon_collector->capacity;
+    result += vert_collecor->capacity;
+    result += r_diag_collector->capacity;
+    result += l_diag_collector->capacity;
+
+    free(horizon_collector);
+    free(vert_collecor);
+    free(r_diag_collector);
+    free(l_diag_collector);
 
     return result;
 }
