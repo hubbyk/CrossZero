@@ -58,34 +58,6 @@ AttackCollector* newAttackCollector(int winLineLength, int complexity) {
     return new;
 }
 
-void getAttacks(AttackCollector* collector, gameField* field,
-                    int cellX, int cellY, int figure, int dX, int dY) {
-    collector->figure = figure;
-
-    for(int curX = cellX - dX, curY = cellY - dY;
-        (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
-                                                (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
-        curX -= (dX << 1), curY -= (dY << 1)) {
-        if (checkCell(collector, field, curX + dX, curY + dY)) break;
-        if((curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
-                                           (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength) {
-            if (checkCell(collector, field, curX, curY)) break;
-        }
-    }
-
-    turnAround(collector);
-
-    for(int curX = cellX + dX, curY = cellY + dY;
-        (curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
-                                        (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength;
-        curX += (dX << 1), curY += (dY << 1)) {
-        if(checkCell(collector, field, curX - dX, curY - dY)) break;
-        if((curX - cellX < 0)?cellX - curX:curX - cellX <= collector->winLineLength &&
-                                           (curY - cellY < 0)?cellY - curY:curY - cellY <= collector->winLineLength) {
-            if(checkCell(collector, field, curX, curY)) break;
-        }
-    }
-}
 int checkCell(AttackCollector* collector, gameField* field, int x, int y) {
     int figure = getValueByCords(field, x, y);
 
@@ -158,17 +130,6 @@ void storeAttack(AttackCollector* collector) {
     collector->firstPower = collector->curPower;
     collector->firstDivider = collector->curDivider;
     collector->firstPotential = collector->curPotential;
-}
-
-int countAttacksWeightOnLine(gameField* field, int complexity,
-                                 int curX, int curY, int figure, int dX, int dY, int winLineLength) {
-    int result;
-    AttackCollector* collector = newAttackCollector(winLineLength, complexity);
-    getAttacks(collector, field, curX, curY, figure, dX, dY);
-    //result = (complexity > HARD)?filteredAttacks(collector, winLineLength):collector->attacks;
-    result = collector->capacity;
-    free(collector);
-    return result;
 }
 
 int getAllAttacksWeight(gameField* field, int complexity, int xCord, int yCord, int winLineLength) {
